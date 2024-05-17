@@ -1,0 +1,15 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        # bootstrap: true
+        git:
+          uri: https://github.com/thirusubash/config-repo.git
+          search-paths: "*service"
+          # Uncomment the following line if you want to specify a default label
+          # default-label: main

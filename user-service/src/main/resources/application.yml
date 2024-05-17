@@ -1,0 +1,74 @@
+# server:
+#   port: 8084  
+# spring:
+#   application:
+#     name: user-service  
+#   datasource:  
+#     url: jdbc:mysql://192.168.0.153:3306/user_service
+#     username: user_service
+#     password: Pa$$w0rd@app  
+#     driver-class-name: com.mysql.cj.jdbc.Driver
+#   jpa:
+#     hibernate:
+#       ddl-auto: update
+#     properties:
+#       hibernate:
+#         hbm2ddl.auto: create
+    
+
+# eureka:
+#   client:
+#     service-url:
+#       defaultZone: http://192.168.0.153:8761/eureka/ 
+
+#   management:
+#   endpoints:
+#     web:
+#       exposure:
+#         include: refresh 
+
+# zuul:
+#   routes:  
+
+
+
+server:
+  port: 8006
+  servlet:
+    context-path: /api
+
+spring:
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+  config:
+    import: "optional:configserver:http://localhost:8888"
+
+  application:
+    name: user-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/user_service
+    username: user_service
+    password: Pa$$w0rd@app 
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        hbm2ddl.auto: update
+  profiles:
+    active: dev
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,beans
+
+logging:
+  level:
+    root: WARN
+

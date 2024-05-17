@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:5.7
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: user_service
+      MYSQL_USER: user_service
+      MYSQL_PASSWORD: Pa$$w0rd@app
+    volumes:
+      - mysql-data:/var/lib/mysql
+    restart: always
+  user-service:
+    build: .
+    ports:
+      - '9000:9000'
+    environment:
+      DATABASE_HOST: mysql
+      DATABASE_USER: user_service
+      DATABASE_PASSWORD: Pa$$w0rd@app
+      DATABASE_NAME: user_service
+    depends_on:
+      - mysql
+    restart: always
+volumes:
+  mysql-data: null
+  mongo-data: null

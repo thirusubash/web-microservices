@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: user_service
+      MYSQL_USER: user_service
+      MYSQL_PASSWORD: Pa$$w0rd@app
+    volumes:
+      - mysql-data:/var/lib/mysql
+    restart: always
+
+  config-server:
+    build: ./config-server/
+    ports:
+      - "8888:8888"
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      # Define other environment variables your config server might need
+    restart: always
+
+  discovery-service:
+    build: ./discovery-service/
+    ports:
+      - "8761:8761" # Changed port for Discovery Service to avoid conflict
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+    restart: always
+
+  user-service:
+    build: ./user-service/
+    ports:
+      - "8080:8081"
+    environment:
+      DATABASE_HOST: mysql
+      DATABASE_USER: user_service
+      DATABASE_PASSWORD: Pa$$w0rd@app
+      DATABASE_NAME: user_service
+    depends_on:
+      - mysql
+      - config-server
+    restart: always
+
+  react-app:
+    build: ./reactApp-master/
+    ports:
+      - '8080:80'
+    environment:
+      NODE_ENV: production
+    restart: always
+
+  
+
+volumes:
+  mysql-data:
+  mongo-data:
