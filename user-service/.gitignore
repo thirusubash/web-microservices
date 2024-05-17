@@ -31,4 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+### Custome ###
+.\config-server\.env
 .env
