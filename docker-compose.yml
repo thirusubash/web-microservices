@@ -34,7 +34,35 @@ services:
   user-service:
     build: ./user-service/
     ports:
-      - "8080:8081"
+      - "8000:8000"
+    environment:
+      DATABASE_HOST: mysql
+      DATABASE_USER: user_service
+      DATABASE_PASSWORD: Pa$$w0rd@app
+      DATABASE_NAME: user_service
+    depends_on:
+      - mysql
+      - config-server
+    restart: always
+
+  auth-service:
+    build: ./auth-service/
+    ports:
+      - "8001:8001"
+    environment:
+      DATABASE_HOST: mysql
+      DATABASE_USER: user_service
+      DATABASE_PASSWORD: Pa$$w0rd@app
+      DATABASE_NAME: user_service
+    depends_on:
+      - user_service
+      - config-server
+    restart: always
+  
+  api-gateway:
+    build: ./api-gateway/
+    ports:
+      - "443:443"
     environment:
       DATABASE_HOST: mysql
       DATABASE_USER: user_service
