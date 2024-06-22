@@ -60,10 +60,9 @@ public class Company extends AbstractEntity {
     // @JsonManagedReference("company-plants")
     // private Set<Plant> plants = new HashSet<>();
 
-    // @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch =
-    // FetchType.LAZY)
-    // @JsonManagedReference("company-employees")
-    // private Set<Employee> employees;
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("company-employees")
+    private Set<Employee> employees;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference("company-accounts")

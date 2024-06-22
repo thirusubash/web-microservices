@@ -42,4 +42,14 @@ public class Employee extends AbstractEntity {
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     @JsonManagedReference("employee-accounts")
     private Set<EmployeeBankAccount> accounts = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    @JsonBackReference("company-employees")
+    private Company company;
+
+    // @ManyToOne
+    // @JoinColumn(name = "plant_id")
+    // @JsonManagedReference("plant-employees")
+    // private Plant plant;
 }
