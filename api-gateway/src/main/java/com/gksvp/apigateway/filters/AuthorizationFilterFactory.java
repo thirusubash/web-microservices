@@ -5,10 +5,13 @@ import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFac
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
-
 
 @Component
 public class AuthorizationFilterFactory extends AbstractGatewayFilterFactory<AuthorizationFilterFactory.Config> {
@@ -28,43 +31,33 @@ public class AuthorizationFilterFactory extends AbstractGatewayFilterFactory<Aut
 
             // Check if the user has all the required roles and groups
             if (roleAuthorities != null && !roleAuthorities.isEmpty() && roleAuthorities.containsAll(requiredRoles)
+                    && groupAuthorities != null && !groupAuthorities.isEmpty()
                     && groupAuthorities.containsAll(requiredGroups)) {
                 // User has all the required authorities, allow access to the route
+
+                exchange.getRequest().mutate()
+                        .header("X-Username", (String) exchange.getAttribute("username"))
+                        .header("X-Roles", roleAuthorities.toString())
+                        .header("X-Groups", groupAuthorities.toString())
+                        .build();
                 return chain.filter(exchange);
             } else {
                 // User does not have all the required authorities, return unauthorized response
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                 exchange.getResponse().getHeaders().add("Content-Type", "application/json");
                 String message = "{\"message\": \"Insufficient Privilege\"}";
-                return exchange.getResponse().writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(message.getBytes())));
+                return exchange.getResponse()
+                        .writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(message.getBytes())));
             }
-            
         };
     }
 
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class Config {
         private ArrayList<String> requiredRoles;
         private ArrayList<String> requiredGroups;
-
-        public Config(ArrayList<String> requiredRoles, ArrayList<String> requiredGroups) {
-            this.requiredRoles = requiredRoles;
-            this.requiredGroups = requiredGroups;
-        }
-
-        public ArrayList<String> getRequiredRoles() {
-            return requiredRoles;
-        }
-
-        public void setRequiredRoles(ArrayList<String> requiredRoles) {
-            this.requiredRoles = requiredRoles;
-        }
-
-        public ArrayList<String> getRequiredGroups() {
-            return requiredGroups;
-        }
-
-        public void setRequiredGroups(ArrayList<String> requiredGroups) {
-            this.requiredGroups = requiredGroups;
-        }
     }
 }

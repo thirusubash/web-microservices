@@ -19,6 +19,15 @@ import com.gksvp.userservice.service.users.UserAddressManagementService;
 import com.gksvp.userservice.service.users.UserPhoneNoManagementService;
 
 public class UserManagementService implements UserPhoneNoManagementService , UserAddressManagementService    {
+
+  private final ModelMapper modelMapper;
+  private final UserRepository userRepository;
+  private final PhoneNumberRepository phoneNumberRepository;
+  private final AddressRepository addressRepository;
+  private PasswordEncoder passwordEncoder;
+  private GroupRepository groupRepository;
+  private RoleRepository roleRepository;
+
     public UserManagementService(ModelMapper modelMapper, PasswordEncoder passwordEncoder,
             UserRepository userRepository, RoleRepository roleRepository, GroupRepository groupRepository,
             PhoneNumberRepository phoneNumberRepository,AddressRepository addressRepository) {
@@ -31,13 +40,7 @@ public class UserManagementService implements UserPhoneNoManagementService , Use
         this.addressRepository = addressRepository;
     }
 
-    private final ModelMapper modelMapper;
-    private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final GroupRepository groupRepository;
-    private final PhoneNumberRepository phoneNumberRepository;
-    private final AddressRepository addressRepository;
+ 
    
 @Override
 public String  addPhoneNumber(Long user_id, PhoneNumberDTO phoneNumbersDTO) throws Exception {

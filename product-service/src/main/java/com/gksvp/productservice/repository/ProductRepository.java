@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.gksvp.productservice.entity.Product;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
-    
+public interface ProductRepository<T extends Product> extends JpaRepository<T, Long> {
+    // Common CRUD operations for all product types
 }

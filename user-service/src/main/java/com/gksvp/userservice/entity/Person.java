@@ -2,14 +2,13 @@ package com.gksvp.userservice.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
@@ -30,23 +29,22 @@ public abstract class Person {
     @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
 
-   
     // Optional mobile validation (uncomment if needed)
     // @Column(nullable = false, unique = true)
     // @NotBlank(message = "Mobile number cannot be blank")
     // private String mobile;
 
     @Column(name = "is_enabled", nullable = false)
-    private Boolean isEnabled=true;
+    private Boolean isEnabled = true;
 
     @Column(name = "is_account_non_expired", nullable = false)
-    private Boolean isAccountNonExpired=true;
+    private Boolean isAccountNonExpired = true;
 
     @Column(name = "is_account_non_locked", nullable = false)
-    private Boolean isAccountNonLocked=true;
+    private Boolean isAccountNonLocked = true;
 
     @Column(name = "is_credentials_non_expired", nullable = false)
-    private Boolean isCredentialsNonExpired=true;
+    private Boolean isCredentialsNonExpired = true;
 
     @Column(nullable = false)
     @NotBlank(message = "First name cannot be blank")
@@ -64,12 +62,10 @@ public abstract class Person {
     @NotBlank(message = "Email cannot be blank")
     private String email;
 
-
     @Column(nullable = true)
     @Past(message = "Date of birth must be in the past")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd") 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
-
 
     @CreationTimestamp
     private LocalDateTime creationDateTime;
@@ -82,9 +78,8 @@ public abstract class Person {
     private Boolean isEmailVerified = false;
 
     private Boolean isActive = true;
-    
-    private String url;
 
+    private UUID imageid;
 
     @PrePersist
     public void prePersist() {

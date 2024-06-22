@@ -14,14 +14,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-
 
 @RestController
 @RequestMapping("/roles")
@@ -32,9 +31,7 @@ public class RoleController {
     @Qualifier("roleService")
     private UserGroupBaseService<RoleCreateRequest, RoleResponse> roleService;
 
-
-
-   @GetMapping
+    @GetMapping
     public List<RoleResponse> getAllRoles() {
         log.info("Fetching all roles");
         return roleService.getAll();
@@ -47,7 +44,8 @@ public class RoleController {
     }
 
     @PostMapping
-    public RoleResponse createRole(@RequestBody  @Valid RoleCreateRequest roleCreateRequest) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public RoleResponse createRole(@RequestBody @Valid RoleCreateRequest roleCreateRequest) {
         log.info("Creating role: {}", roleCreateRequest);
         return roleService.create(roleCreateRequest);
     }
@@ -63,6 +61,5 @@ public class RoleController {
         log.info("Deleting role with id: {}", id);
         roleService.delete(id);
     }
-    
-    
+
 }

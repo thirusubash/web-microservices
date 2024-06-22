@@ -1,14 +1,17 @@
 package com.gksvp.userservice.controller;
 
+import com.gksvp.userservice.dto.user.UpdateUser;
 import com.gksvp.userservice.dto.user.UserRequest;
 import com.gksvp.userservice.dto.user.UserResponse;
 import com.gksvp.userservice.service.users.UserService;
+import com.gksvp.userservice.service.users.impl.UserProfileServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/users")
@@ -16,6 +19,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserProfileServiceImpl userProfileService;
 
     @GetMapping
     public ResponseEntity<Page<UserResponse>> getAllUsers(Pageable pageable) {
@@ -35,7 +40,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody UserRequest userRequest) {
+    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody UpdateUser userRequest) {
         return userService.updateUser(id, userRequest);
     }
 

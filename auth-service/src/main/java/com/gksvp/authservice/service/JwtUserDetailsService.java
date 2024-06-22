@@ -1,4 +1,5 @@
 package com.gksvp.authservice.service;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,8 +19,7 @@ import java.util.stream.Collectors;
 public class JwtUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private  UserService userService;
-   
+    private UserService userService;
 
     public JwtUserDetailsService(UserService userService) {
         this.userService = userService;
@@ -28,11 +28,11 @@ public class JwtUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         try {
-            User user=userService.getUserByUsername(userName);
+            User user = userService.getUserByUsername(userName);
             if (user == null) {
                 throw new UsernameNotFoundException("User not found with username: " + userName);
             }
-            
+
             List<GrantedAuthority> authorities = getUserAuthority(user.getRoles());
             return buildUserForAuthentication(user, authorities);
         } catch (Exception e) {
@@ -62,5 +62,20 @@ public class JwtUserDetailsService implements UserDetailsService {
                 user.getIsCredentialsNonExpired(),
                 user.getIsAccountNonLocked(),
                 authorities);
+    }
+
+    public User getUserProfile(String userName) throws UsernameNotFoundException {
+        try {
+            User user = userService.getUserByUsername(userName);
+
+            if (user == null) {
+                throw new UsernameNotFoundException("User not found with username: " + userName);
+            }
+            user.setPassword("*****************************");
+            return user;
+        } catch (Exception e) {
+            log.error("Error loading user by username", e);
+            throw new UsernameNotFoundException("User not found with username: " + userName);
+        }
     }
 }

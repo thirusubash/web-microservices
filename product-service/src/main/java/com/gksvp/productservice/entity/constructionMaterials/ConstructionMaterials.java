@@ -6,5 +6,5 @@ import jakarta.persistence.Entity;
 
 @Entity
 public class ConstructionMaterials extends Product{
-    
+    private String ConstructionMaterialsLogo;
 }

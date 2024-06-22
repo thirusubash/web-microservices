@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -28,21 +29,16 @@ import jakarta.validation.constraints.Size;
 @AllArgsConstructor
 @Builder
 public class UserRequest {
+    
+    private Long id;
 
-     @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     @NotBlank(message = "Username cannot be blank")
     private String username;
 
     @Column(nullable = false)
     @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
-
-   
-    // Optional mobile validation (uncomment if needed)
-    // @Column(nullable = false, unique = true)
-    // @NotBlank(message = "Mobile number cannot be blank")
-    // private String mobile;
-
 
     @Column(nullable = false)
     @NotBlank(message = "First name cannot be blank")
@@ -60,17 +56,20 @@ public class UserRequest {
     @NotBlank(message = "Email cannot be blank")
     private String email;
 
-
     @Column(nullable = true)
     @Past(message = "Date of birth must be in the past")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd") 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 
     private String url;
 
-    private List<PhoneNumberDTO> mobileNumbers;
+    // Initialize as empty list, and allow modification during building
+    @Builder.Default
+    private List<PhoneNumberDTO> mobileNumbers = new ArrayList<>();
 
-    private List<AddressDTO> addresses;
+    // Initialize as empty list, and allow modification during building
+    @Builder.Default
+    private List<AddressDTO> addresses = new ArrayList<>();
 
     private List<UserKYCInfoDTO> kycInfoList;
 

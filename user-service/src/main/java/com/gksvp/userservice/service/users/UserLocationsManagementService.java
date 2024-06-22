@@ -1,13 +1,7 @@
 package com.gksvp.userservice.service.users;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.gksvp.userservice.dto.geo.GeoLocationCreateRequest;
-import com.gksvp.userservice.dto.user.UserResponse;
 import com.gksvp.userservice.entity.GeoLocation;
 import com.gksvp.userservice.entity.User;
-import com.gksvp.userservice.exception.ResourceNotFoundException;
-import com.gksvp.userservice.repository.UserRepository;
 
 public interface UserLocationsManagementService {
    

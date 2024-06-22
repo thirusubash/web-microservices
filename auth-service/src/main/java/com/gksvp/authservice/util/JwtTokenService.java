@@ -23,17 +23,15 @@ import javax.crypto.SecretKey;
 
 @Component
 @Slf4j
-public class JwtTokenService   {
-   
+public class JwtTokenService {
 
     private final UserService userService;
-    private  static final String SECRET_KEY="emGyGjAFVtKvozZruhibCsua0om9XOr3vfX171BOSVQW47xCDhz7ABTN5kFMnFQ8";
+    private static final String SECRET_KEY = "emGyGjAFVtKvozZruhibCsua0om9XOr3vfX171BOSVQW47xCDhz7ABTN5kFMnFQ8";
     SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     // private static final SecretKey key = Jwts.SIG.HS512.key().build();
 
-	String jws = Jwts.builder().subject("Joe").signWith(key).compact();
-
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+    public static final long refreshTokenValidityInMilliseconds = 5 * 60 * 60;;
 
     public JwtTokenService(UserService userService) {
         this.userService = userService;
@@ -57,10 +55,10 @@ public class JwtTokenService   {
     }
 
     private Claims getAllClaimsFromToken(String token) {
-			return Jwts.parser()
-			.verifyWith(key)
-			.build()
-			.parseSignedClaims(token).getPayload();        
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token).getPayload();
     }
 
     private boolean isTokenExpired(String token) {
@@ -68,14 +66,13 @@ public class JwtTokenService   {
         return expiration.before(new Date());
     }
 
-    private boolean isValidAudience(String token){
+    private boolean isValidAudience(String token) {
         String expectedAudience = "web";
         if (!getClaimFromToken(token, Claims::getAudience).contains(expectedAudience)) {
             throw new JwtException("Invalid audience");
         }
         return true;
     }
-    
 
     private Boolean ignoreTokenExpiration(String token) {
         // Consider removing or obfuscating token information in the log message
@@ -84,18 +81,22 @@ public class JwtTokenService   {
     }
 
     public String generateToken(UserDetails userDetails) throws Exception {
-            User user = userService.getUserByUsername(userDetails.getUsername());
-            final List<String> roleAuthorities = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-            Set<String> groupAuthorities = user.getGroups().stream().map(Group::getName).collect(Collectors.toSet());
-        return Jwts.builder().claim("userId", user.getId()).claim("roles",roleAuthorities).claim("groups",groupAuthorities)
-                    .issuer("www.gksvp.com")
-                    .subject(user.getUsername())
-                    .audience().add("web").and()
-                    .expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000)) 
-                    .notBefore(new Date(System.currentTimeMillis()))
-                    .issuedAt(new Date(System.currentTimeMillis())) 
-                    .id(UUID.randomUUID().toString())
-                    .signWith(key).compact();
+        User user = userService.getUserByUsername(userDetails.getUsername());
+        final List<String> roleAuthorities = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        Set<String> groupAuthorities = user.getGroups().stream().map(Group::getName).collect(Collectors.toSet());
+        return Jwts.builder()
+                .issuer("www.gksvp.com")
+                .subject(user.getUsername())
+                .audience().add("web").and()
+                .expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+                .notBefore(new Date(System.currentTimeMillis()))
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .id(UUID.randomUUID().toString())
+                .claim("userId", user.getId())
+                .claim("roles", roleAuthorities)
+                .claim("groups", groupAuthorities)
+                .signWith(key).compact();
     }
 
     public Boolean canTokenBeRefreshed(String token) {
@@ -111,7 +112,26 @@ public class JwtTokenService   {
         }
         final String username = getUsernameFromToken(token);
         log.info("Username from validate method: {}", username);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token) && isValidAudience(token) ;
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token) && isValidAudience(token);
     }
-      
+
+    public String generateRefreshToken(UserDetails userDetails) {
+        User user = userService.getUserByUsername(userDetails.getUsername());
+        final List<String> roleAuthorities = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        Set<String> groupAuthorities = user.getGroups().stream().map(Group::getName).collect(Collectors.toSet());
+        return Jwts.builder()
+                .issuer("www.gksvp.com")
+                .subject(user.getUsername())
+                .audience().add("web").and()
+                .expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+                .notBefore(new Date(System.currentTimeMillis()))
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .id(UUID.randomUUID().toString())
+                .claim("userId", user.getId())
+                .claim("roles", roleAuthorities)
+                .claim("groups", groupAuthorities)
+                .signWith(key).compact();
+    }
+
 }

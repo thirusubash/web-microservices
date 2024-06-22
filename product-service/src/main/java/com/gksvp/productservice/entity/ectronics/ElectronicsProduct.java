@@ -10,8 +10,7 @@ import lombok.Setter;
 @Setter
 @Entity
 public class ElectronicsProduct  extends Product {
-    private int size; // Screen size (inches) or physical dimensions
-    private int weight; // Weight in grams
+    private int size; 
     private String warranty;
     private String service;
 }
