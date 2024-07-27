@@ -179,10 +179,6 @@ function Portfolio() {
   return (
     <ThemeProvider theme={theme}>
       <StyledContainer>
-        <Typography variant="h2" component="h1" gutterBottom>
-          My Portfolio
-        </Typography>
-
         {/* About Me Section */}
         <StyledSection>
           <Typography variant="h4" component="h2" gutterBottom>

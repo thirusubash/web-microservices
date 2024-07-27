@@ -1,5 +1,6 @@
 
 package com.gksvp.apigateway.security;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -17,7 +18,7 @@ import java.util.function.Function;
 @Slf4j
 @Service
 public class JwtUtil {
-    public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60; 
+    public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
     private static final String SECRET_KEY = "emGyGjAFVtKvozZruhibCsua0om9XOr3vfX171BOSVQW47xCDhz7ABTN5kFMnFQ8";
     SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
@@ -25,14 +26,19 @@ public class JwtUtil {
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
+
     @SuppressWarnings("unchecked")
     public ArrayList<String> getRolesFromToken(String token) {
-        return Optional.ofNullable((ArrayList<String>) getClaimFromToken(token, claims -> claims.get("roles"))).orElseThrow(() -> new JwtException(" error getting roles"));
+        return Optional.ofNullable((ArrayList<String>) getClaimFromToken(token, claims -> claims.get("roles")))
+                .orElseThrow(() -> new JwtException(" error getting roles"));
     }
+
     @SuppressWarnings("unchecked")
     public ArrayList<String> getGroupsFromToken(String token) {
-        return Optional.ofNullable((ArrayList<String>) getClaimFromToken(token, claims -> claims.get("groups"))).orElseThrow(() -> new JwtException(" Exception geting groups"));
-    }   
+        return Optional.ofNullable((ArrayList<String>) getClaimFromToken(token, claims -> claims.get("groups")))
+                .orElseThrow(() -> new JwtException(" Exception geting groups"));
+    }
+
     private Date getIssuedAtDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getIssuedAt);
     }

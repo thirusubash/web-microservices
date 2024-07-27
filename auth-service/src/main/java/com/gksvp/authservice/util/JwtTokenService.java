@@ -5,6 +5,8 @@ import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -26,15 +28,20 @@ import javax.crypto.SecretKey;
 public class JwtTokenService {
 
     private final UserService userService;
-    private static final String SECRET_KEY = "emGyGjAFVtKvozZruhibCsua0om9XOr3vfX171BOSVQW47xCDhz7ABTN5kFMnFQ8";
-    SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+
+    private String jwtSecret = "emGyGjAFVtKvozZruhibCsua0om9XOr3vfX171BOSVQW47xCDhz7ABTN5kFMnFQ8";
+
+    @Value("${jwt.token-expiration-time-seconds:18000}")
+    private long jwtTokenExpirationTimeSeconds;
+
+    @Value("${jwt.refresh-token-expiration-time-seconds:36000}")
+    private long refreshTokenExpirationTimeSeconds;
+    SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+
     // private static final SecretKey key = Jwts.SIG.HS512.key().build();
-
-    public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
-    public static final long refreshTokenValidityInMilliseconds = 5 * 60 * 60;;
-
-    public JwtTokenService(UserService userService) {
+    public JwtTokenService(UserService userService, @Value("${jwt.secret}") String jwtSecret) {
         this.userService = userService;
+        this.jwtSecret = jwtSecret;
     }
 
     public String getUsernameFromToken(String token) {
@@ -89,7 +96,7 @@ public class JwtTokenService {
                 .issuer("www.gksvp.com")
                 .subject(user.getUsername())
                 .audience().add("web").and()
-                .expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+                .expiration(new Date(System.currentTimeMillis() + jwtTokenExpirationTimeSeconds * 1000))
                 .notBefore(new Date(System.currentTimeMillis()))
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .id(UUID.randomUUID().toString())
@@ -124,7 +131,7 @@ public class JwtTokenService {
                 .issuer("www.gksvp.com")
                 .subject(user.getUsername())
                 .audience().add("web").and()
-                .expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+                .expiration(new Date(System.currentTimeMillis() + refreshTokenExpirationTimeSeconds * 1000))
                 .notBefore(new Date(System.currentTimeMillis()))
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .id(UUID.randomUUID().toString())

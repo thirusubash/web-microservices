@@ -1,6 +1,7 @@
 package com.gksvp.apigateway.filters;
 
-import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -11,6 +12,7 @@ import org.springframework.web.server.ServerWebExchange;
 
 import com.gksvp.apigateway.security.JwtUtil;
 
+import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
@@ -21,44 +23,40 @@ public class JwtRequestFilter implements GatewayFilter {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        // Check for the token in the "accessToken" cookie
-        HttpCookie tokenOptional = exchange.getRequest().getCookies().getFirst("accessToken");
+        return Mono.justOrEmpty(exchange.getRequest().getCookies().getFirst("accessToken"))
+                .map(HttpCookie::getValue)
+                .flatMap(token -> validateAndExtractClaims(token, exchange, chain))
+                .switchIfEmpty(setUnauthorizedResponse(exchange, "Unauthorized Access: Missing accessToken cookie."));
+    }
 
-        if (tokenOptional != null) {
-            String token = tokenOptional.getValue();
-
-            if (jwtUtil.validateToken(token)) {
-                // Valid token: Extract claims from the JWT token
-                String username = jwtUtil.getUsernameFromToken(token);
-                ArrayList<String> roles = jwtUtil.getRolesFromToken(token);
-                ArrayList<String> groups = jwtUtil.getGroupsFromToken(token);
-
-                // Set claims as attributes in ServerWebExchange
-                exchange.getAttributes().put("username", username);
-                exchange.getAttributes().put("roles", roles);
-                exchange.getAttributes().put("groups", groups);
-
-                
-
-                // Proceed with the filter chain
-                return chain.filter(exchange);
-            } else {
-                // Invalid token case
-                log.error("Invalid token in cookie.");
-                return setUnauthorizedResponse(exchange, "Invalid token.");
+    private Mono<Void> validateAndExtractClaims(String token, ServerWebExchange exchange, GatewayFilterChain chain) {
+        if (jwtUtil.validateToken(token)) {
+            try {
+                return extractClaimsAndContinue(token, exchange, chain);
+            } catch (JwtException ex) {
+                log.error("Invalid token format: {}", ex.getMessage());
+                return setUnauthorizedResponse(exchange, "Invalid token format.");
             }
         } else {
-            // Missing or invalid token case
-            log.error("Missing or invalid token cookie.");
-            return setUnauthorizedResponse(exchange, "Missing or invalid token cookie.");
+            return setUnauthorizedResponse(exchange, "Invalid or expired token.");
         }
     }
 
+    private Mono<Void> extractClaimsAndContinue(String token, ServerWebExchange exchange, GatewayFilterChain chain) {
+        exchange.getAttributes().put("username", jwtUtil.getUsernameFromToken(token));
+        exchange.getAttributes().put("roles", jwtUtil.getRolesFromToken(token));
+        exchange.getAttributes().put("groups", jwtUtil.getGroupsFromToken(token));
+        return chain.filter(exchange);
+    }
+
     private Mono<Void> setUnauthorizedResponse(ServerWebExchange exchange, String message) {
+        log.error(message);
         exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
         exchange.getResponse().getHeaders().add("Content-Type", "application/json");
-        return exchange.getResponse()
-                .writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(message.getBytes())));
+
+        byte[] responseBody = String.format("{\"message\": \"%s\"}", message).getBytes(StandardCharsets.UTF_8);
+        return exchange.getResponse().writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(responseBody)));
     }
 }

@@ -7,7 +7,6 @@ import com.gksvp.authservice.model.Group;
 import com.gksvp.authservice.model.Role;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

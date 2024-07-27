@@ -1,8 +1,8 @@
-version: '3.8'
+version: "3.8"
 
 services:
   mysql:
-    image: mysql:5.7
+    image: mysql:latest
     ports:
       - "3306:3306"
     environment:
@@ -20,15 +20,20 @@ services:
       - "8888:8888"
     environment:
       SPRING_PROFILES_ACTIVE: default
-      # Define other environment variables your config server might need
+    volumes:
+      - ./config-server/config:/config
+    depends_on:
+      - mysql
     restart: always
 
   discovery-service:
     build: ./discovery-service/
     ports:
-      - "8761:8761" # Changed port for Discovery Service to avoid conflict
+      - "8761:8761"
     environment:
       SPRING_PROFILES_ACTIVE: default
+    depends_on:
+      - config-server
     restart: always
 
   user-service:
@@ -40,9 +45,11 @@ services:
       DATABASE_USER: user_service
       DATABASE_PASSWORD: Pa$$w0rd@app
       DATABASE_NAME: user_service
+      SPRING_PROFILES_ACTIVE: default
     depends_on:
       - mysql
       - config-server
+      - discovery-service
     restart: always
 
   auth-service:
@@ -54,35 +61,50 @@ services:
       DATABASE_USER: user_service
       DATABASE_PASSWORD: Pa$$w0rd@app
       DATABASE_NAME: user_service
+      SPRING_PROFILES_ACTIVE: default
     depends_on:
-      - user_service
+      - user-service
       - config-server
+      - discovery-service
     restart: always
-  
+
   api-gateway:
     build: ./api-gateway/
     ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+    depends_on:
+      - discovery-service
+      - config-server
+      - auth-service
+    restart: always
+
+  frontend:
+    image: gksvp/react-app:latest
+    container_name: react-app-container
+    restart: always
+    ports:
+      - "80:80"
       - "443:443"
     environment:
-      DATABASE_HOST: mysql
-      DATABASE_USER: user_service
-      DATABASE_PASSWORD: Pa$$w0rd@app
-      DATABASE_NAME: user_service
-    depends_on:
-      - mysql
-      - config-server
-    restart: always
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-  react-app:
-    build: ./reactApp-master/
-    ports:
-      - '8080:80'
-    environment:
-      NODE_ENV: production
-    restart: always
 
-  
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    # Adjust entrypoint to your needs if you want to run certbot in non-renewal mode
 
 volumes:
   mysql-data:
   mongo-data:
+  certs:

@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  TextField,
-  Box,
-  Typography,
-  Snackbar,
-  IconButton,
-  Button,
-} from "@mui/material";
-import { Alert } from "@mui/material";
-import axios from "axios";
+import { TextField, Box, Typography, IconButton, Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { refreshAccessToken } from "../../../redux/slices/authSlice";
+import axiosInstance from "api/axiosInstance";
+import useSnackbar from "hooks/useSnackbar";
+import GlowingCircularProgress from "utils/GlowingCircularProgress";
 
 const UserProfile = () => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
+  const { SnackbarComponent, showSnackbar } = useSnackbar(); // Use the custom hook
 
   const [formData, setFormData] = useState({
     username: "",
@@ -23,12 +18,10 @@ const UserProfile = () => {
     firstName: "",
     lastName: "",
     dateOfBirth: "",
-    url: "https://example.com/johndoe",
+    url: "https://gksvp.com/'user'",
   });
 
   const [editMode, setEditMode] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   useEffect(() => {
     if (user) {
@@ -38,7 +31,7 @@ const UserProfile = () => {
         firstName: user.firstName || "",
         lastName: user.lastName || "",
         dateOfBirth: user.dateOfBirth || "",
-        url: user.url || "https://example.com/johndoe",
+        url: user.url || "",
       });
     }
   }, [user]);
@@ -56,15 +49,14 @@ const UserProfile = () => {
   };
 
   const handleSaveClick = () => {
-    axios
-      .put(`https://localhost:8080/api/users/${user.id}`, formData, {
+    axiosInstance
+      .put(`/user-service/users/${user.id}`, formData, {
         withCredentials: true,
       })
       .then((response) => {
         if (response.status >= 200 && response.status < 300) {
           console.log("User profile updated successfully:", response.data);
-          setSnackbarSeverity("success");
-          setSnackbarOpen(true);
+          showSnackbar("User profile updated successfully", "success");
           setEditMode(false);
           dispatch(refreshAccessToken());
         } else {
@@ -84,17 +76,12 @@ const UserProfile = () => {
           console.error("General Error:", error.message);
         }
 
-        setSnackbarSeverity("error");
-        setSnackbarOpen(true);
+        showSnackbar(errorMessage, "error");
       });
   };
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
-
   if (!user) {
-    return <Typography variant="h6">Loading...</Typography>;
+    return <GlowingCircularProgress />;
   }
 
   return (
@@ -102,17 +89,6 @@ const UserProfile = () => {
       <Typography variant="h4" gutterBottom>
         User Profile
       </Typography>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-      >
-        <Alert severity={snackbarSeverity} onClose={handleSnackbarClose}>
-          {snackbarSeverity === "success"
-            ? "User profile updated successfully"
-            : "Failed to update user profile"}
-        </Alert>
-      </Snackbar>
       <Box mb={2}>
         <TextField
           fullWidth
@@ -173,6 +149,7 @@ const UserProfile = () => {
           Save
         </Button>
       )}
+      {SnackbarComponent} {/* Render the Snackbar component */}
     </Box>
   );
 };

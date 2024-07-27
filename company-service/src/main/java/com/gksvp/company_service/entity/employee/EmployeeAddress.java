@@ -1,9 +1,9 @@
 package com.gksvp.company_service.entity.employee;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.gksvp.company_service.entity.AbstractAddress;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,8 +13,7 @@ import lombok.Setter;
 @Setter
 public class EmployeeAddress extends AbstractAddress {
 
-    @ManyToOne
-    @JsonBackReference("employee-addresses")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Employee employee;
 
     private boolean isPrimary;

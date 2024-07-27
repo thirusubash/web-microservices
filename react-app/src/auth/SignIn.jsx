@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import {
   Avatar,
   Box,
   Button,
-  CircularProgress,
   Container,
   CssBaseline,
   TextField,
@@ -13,9 +12,10 @@ import {
   Alert,
 } from "@mui/material";
 import LockPersonIcon from "@mui/icons-material/LockPerson";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/slices/authSlice";
+import GlowingCircularProgress from "utils/GlowingCircularProgress";
 
 const SignIn = () => {
   const [credentials, setCredentials] = useState({
@@ -26,34 +26,37 @@ const SignIn = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const loading = useSelector((state) => state.auth.loading);
   const error = useSelector((state) => state.auth.error);
 
-  // Handle server-side errors received from Redux state
-  React.useEffect(() => {
+  useEffect(() => {
+    if (isAuthenticated) {
+      // Redirect to the intended route or home if already authenticated
+      const from = location.state?.from?.pathname || "/";
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, location.state, navigate]);
+
+  useEffect(() => {
     if (error) {
-      setErrorMessage(error); // Set error message received from server
-      setShowError(true); // Show Snackbar with error message
+      setErrorMessage(error);
+      setShowError(true);
     }
   }, [error]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setShowError(false); // Hide any previous error message
+    setShowError(false);
 
     try {
       await dispatch(loginUser(credentials)).unwrap();
-      navigate("/"); // Navigate to home page after successful login
+      const from = location.state?.from?.pathname || "/";
+      navigate(from, { replace: true });
     } catch (error) {
-      console.error("Error during authentication:", error);
-      // Handle specific server-side error messages here
-      if (error.message === "INVALID_CREDENTIALS") {
-        setErrorMessage("Invalid username or password. Please try again.");
-      } else {
-        setErrorMessage("Login failed. Please try again later.");
-      }
-      setShowError(true); // Show Snackbar with error message
+      setErrorMessage(error.message);
+      setShowError(true);
     }
   };
 
@@ -68,17 +71,30 @@ const SignIn = () => {
   const isSubmitDisabled = credentials.password.length < 8;
 
   const handleSnackbarClose = () => {
-    setShowError(false); // Close Snackbar
+    setShowError(false);
   };
 
   return (
     <Box>
       <Helmet>
-        <title>Login - Your App Name</title>
+        <title>Login - gksvp.com</title>
         <meta
           name="description"
-          content="Login to access your account and explore our website."
+          content="Login to access your account and explore our website. Ensure secure access with our login page."
         />
+        <meta name="robots" content="index, follow" />
+        <meta property="og:title" content="Login - gksvp.com" />
+        <meta
+          property="og:description"
+          content="Login to access your account and explore our website. Ensure secure access with our login page."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.gksvp.com/login" />
+        <meta
+          property="og:image"
+          content="%PUBLIC_URL%/favicon.ico" 
+        />
+        <link rel="canonical" href="https://www.gksvp.com/login" />
       </Helmet>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -92,18 +108,22 @@ const SignIn = () => {
         >
           <Snackbar
             open={showError}
-            autoHideDuration={6000} // Adjust as needed
+            autoHideDuration={6000}
             onClose={handleSnackbarClose}
+            aria-live="assertive"
           >
             <Alert severity="error" onClose={handleSnackbarClose}>
               {errorMessage}
             </Alert>
           </Snackbar>
           {loading ? (
-            <CircularProgress />
+            <GlowingCircularProgress />
           ) : (
             <>
-              <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+              <Avatar
+                sx={{ m: 1, bgcolor: "secondary.main" }}
+                aria-label="Login"
+              >
                 <LockPersonIcon />
               </Avatar>
               <Typography component="h1" variant="h5">
@@ -126,6 +146,7 @@ const SignIn = () => {
                   autoFocus
                   value={credentials.username}
                   onChange={handleChange}
+                  aria-label="Username"
                 />
                 <TextField
                   margin="normal"
@@ -137,6 +158,7 @@ const SignIn = () => {
                   id="password"
                   value={credentials.password}
                   onChange={handleChange}
+                  aria-label="Password"
                 />
                 <Button
                   fullWidth
@@ -144,6 +166,7 @@ const SignIn = () => {
                   variant="contained"
                   sx={{ borderRadius: 5, mt: 3, mb: 2 }}
                   disabled={isSubmitDisabled || loading}
+                  aria-label="Login Button"
                 >
                   Login
                 </Button>
@@ -153,6 +176,7 @@ const SignIn = () => {
                 to="/register"
                 variant="text"
                 color="primary"
+                aria-label="Register Link"
               >
                 Click here to Register
               </Button>

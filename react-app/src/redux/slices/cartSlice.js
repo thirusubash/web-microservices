@@ -3,27 +3,45 @@ import axios from 'axios';
 
 // Initial state
 const initialState = {
-  user: null,
+  cartItems: [],
   loading: false,
   error: null,
 };
 
-// Async thunk for adding to cart
-export const addToCart = createAsyncThunk('cart/addToCart', async (userData, { rejectWithValue }) => {
+// Async thunks
+export const fetchCartItems = createAsyncThunk('cart/fetchCartItems', async (_, { rejectWithValue }) => {
   try {
-    const response = await axios.put('http://localhost:8080/cart-service/add', userData);
+    const response = await axios.get('/api/cart');
     return response.data;
   } catch (error) {
-    return rejectWithValue(error.response.data);
+    return rejectWithValue(error.message);
   }
 });
 
-// Async thunk for removing from cart
-export const removeFromCart = createAsyncThunk('cart/removeFromCart', async (_, { rejectWithValue }) => {
+export const addToCart = createAsyncThunk('cart/addToCart', async (item, { rejectWithValue }) => {
   try {
-    await axios.patch('http://localhost:8080/cart-service/remove');
+    const response = await axios.post('/api/cart', item);
+    return response.data;
   } catch (error) {
-    return rejectWithValue(error.response.data);
+    return rejectWithValue(error.message);
+  }
+});
+
+export const updateCartItem = createAsyncThunk('cart/updateCartItem', async (item, { rejectWithValue }) => {
+  try {
+    await axios.put(`/api/cart/${item.id}`, item);
+    return item;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+
+export const deleteCartItem = createAsyncThunk('cart/deleteCartItem', async (itemId, { rejectWithValue }) => {
+  try {
+    await axios.delete(`/api/cart/${itemId}`);
+    return itemId;
+  } catch (error) {
+    return rejectWithValue(error.message);
   }
 });
 
@@ -33,29 +51,51 @@ const cartSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(fetchCartItems.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchCartItems.fulfilled, (state, action) => {
+        state.cartItems = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchCartItems.rejected, (state, action) => {
+        state.error = action.payload;
+        state.loading = false;
+      })
       .addCase(addToCart.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(addToCart.fulfilled, (state, action) => {
+        state.cartItems.push(action.payload);
         state.loading = false;
-        state.user = action.payload;
       })
       .addCase(addToCart.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload;
+        state.loading = false;
       })
-      .addCase(removeFromCart.pending, (state) => {
+      .addCase(updateCartItem.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
-      .addCase(removeFromCart.fulfilled, (state) => {
+      .addCase(updateCartItem.fulfilled, (state, action) => {
+        state.cartItems = state.cartItems.map((item) =>
+          item.id === action.payload.id ? action.payload : item
+        );
         state.loading = false;
-        state.user = null;
       })
-      .addCase(removeFromCart.rejected, (state, action) => {
-        state.loading = false;
+      .addCase(updateCartItem.rejected, (state, action) => {
         state.error = action.payload;
+        state.loading = false;
+      })
+      .addCase(deleteCartItem.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteCartItem.fulfilled, (state, action) => {
+        state.cartItems = state.cartItems.filter((item) => item.id !== action.payload);
+        state.loading = false;
+      })
+      .addCase(deleteCartItem.rejected, (state, action) => {
+        state.error = action.payload;
+        state.loading = false;
       });
   },
 });

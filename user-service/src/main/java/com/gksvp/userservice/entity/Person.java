@@ -29,11 +29,6 @@ public abstract class Person {
     @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
 
-    // Optional mobile validation (uncomment if needed)
-    // @Column(nullable = false, unique = true)
-    // @NotBlank(message = "Mobile number cannot be blank")
-    // private String mobile;
-
     @Column(name = "is_enabled", nullable = false)
     private Boolean isEnabled = true;
 
@@ -79,7 +74,7 @@ public abstract class Person {
 
     private Boolean isActive = true;
 
-    private UUID imageid;
+    private String picture;
 
     @PrePersist
     public void prePersist() {

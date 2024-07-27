@@ -10,9 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gksvp.homepageservice.enitity.Homepage;
+import com.gksvp.homepageservice.exception.NotFoundException;
 import com.gksvp.homepageservice.repo.DefaultRepository;
-
-import jakarta.ws.rs.NotFoundException;
 
 @Service
 public class HomePageService {

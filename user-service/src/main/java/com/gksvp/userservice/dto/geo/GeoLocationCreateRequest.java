@@ -1,4 +1,5 @@
 package com.gksvp.userservice.dto.geo;
+
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -10,9 +11,8 @@ public class GeoLocationCreateRequest {
     private double latitude;
     private double longitude;
     private String ipAddress;
+
     Object getDescription() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getDescription'");
     }
 }
-

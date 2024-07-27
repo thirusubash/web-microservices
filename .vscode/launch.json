@@ -2,6 +2,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "ConfigServerApplication",
+      "request": "launch",
+      "mainClass": "com.gksvp.configserver.ConfigServerApplication",
+      "projectName": "config-server"
+    },
+    {
+      "type": "java",
       "name": "CompanyServiceApplication",
       "request": "launch",
       "mainClass": "com.gksvp.company_service.CompanyServiceApplication",

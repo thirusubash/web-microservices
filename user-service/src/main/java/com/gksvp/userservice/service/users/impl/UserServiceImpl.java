@@ -16,7 +16,8 @@ import com.gksvp.userservice.dto.user.UserResponse;
 import com.gksvp.userservice.entity.Group;
 import com.gksvp.userservice.entity.Role;
 import com.gksvp.userservice.entity.User;
-import com.gksvp.userservice.exception.ResourceNotFoundException;
+import com.gksvp.userservice.exception.NoContentFoundException;
+import com.gksvp.userservice.exception.NotFoundException;
 import com.gksvp.userservice.repository.GroupRepository;
 import com.gksvp.userservice.repository.PhoneNumberRepository;
 import com.gksvp.userservice.repository.RoleRepository;
@@ -98,7 +99,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ResponseEntity<String> updateUser(Long id, UpdateUser userRequest) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+                .orElseThrow(() -> new NoContentFoundException("User not found with id: " + id));
 
         // Update user with request data
         user.setFirstName(userRequest.getFirstName());
@@ -117,14 +118,14 @@ public class UserServiceImpl implements UserService {
             userRepository.deleteById(id);
             return ResponseEntity.ok("User deleted with ID: " + id);
         } else {
-            throw new ResourceNotFoundException("User not found with id: " + id);
+            throw new NoContentFoundException("User not found with id: " + id);
         }
     }
 
     @Override
     public UserResponse getUser(Long user_id) {
         User user = userRepository.findById(user_id)
-                .orElseThrow(() -> new NullPointerException(user_id + " user not found with this "));
+                .orElseThrow(() -> new NotFoundException(user_id + " user not found with this "));
         return modelMapper.map(user, UserResponse.class);
     }
 

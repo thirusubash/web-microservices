@@ -1,39 +1,15 @@
-server:
-  port: 8002
-  servlet:
-    context-path: /user-service
-
 spring:
-  kafka:
-    producer:
-      bootstrap-servers: localhost:9092
-  config:
-    import: "optional:configserver:http://localhost:8888"
-
   application:
     name: user-service
-  datasource:
-    url: jdbc:mysql://localhost:3306/user_service
-    username: user_service
-    password: Pa$$w0rd@app
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
-        hbm2ddl.auto: update
   profiles:
-    active: dev
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics,beans
-
-logging:
-  level:
-    root: WARN
+    active: ${SPRING_PROFILE:dev}
+  config:
+    import: configserver:${SPRING_CLOUD_CONFIG_URL:http://config-server:8888}
+  cloud:
+    config:
+      fail-fast: true
+      label: main
+    kubernetes:
+      discovery:
+        enabled: true
+        all-namespaces: true # Optional: discover services in all namespaces

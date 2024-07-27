@@ -1,5 +1,6 @@
 
 package com.gksvp.homepageservice;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -15,9 +16,8 @@ import org.mockito.MockitoAnnotations;
 import com.gksvp.homepageservice.repo.DefaultRepository;
 import com.gksvp.homepageservice.service.HomePageService;
 
-import jakarta.ws.rs.NotFoundException;
-
 import com.gksvp.homepageservice.enitity.Homepage;
+import com.gksvp.homepageservice.exception.NotFoundException;
 
 public class HomepageServiceTest {
 

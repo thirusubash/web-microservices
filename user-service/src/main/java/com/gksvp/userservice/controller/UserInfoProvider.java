@@ -34,6 +34,12 @@ public class UserInfoProvider {
         return userInformation.getUserByUsername(userName);
     }
 
+    @GetMapping("/byEmail/{email}") // Changed path with "byName" prefix
+    public User getUserByEmail(@PathVariable("email") String userName) {
+        return userInformation.getUserByEmail(userName);
+    }
+ 
+
     @PostMapping
     public ResponseEntity<String> createUser(@RequestBody UserRequest userRequest) {
         return userService.createUser(userRequest);

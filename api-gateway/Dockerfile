@@ -10,5 +10,5 @@ RUN mvn package -DskipTests
 FROM openjdk:17-jdk-alpine
 WORKDIR /app
 COPY --from=build /app/target/api-gateway-0.0.1-SNAPSHOT.jar /app/api-gateway.jar
-EXPOSE 8080
+EXPOSE 443
 CMD ["java", "-jar", "api-gateway.jar"]

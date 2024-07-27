@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import com.gksvp.userservice.dto.group.GroupCreateRequest;
 import com.gksvp.userservice.dto.group.GroupResponse;
 import com.gksvp.userservice.entity.Group;
-import com.gksvp.userservice.exception.ResourceNotFoundException;
-import com.gksvp.userservice.exception.UserNotFoundException;
+import com.gksvp.userservice.exception.NoContentFoundException;
+import com.gksvp.userservice.exception.NotFoundException;
 import com.gksvp.userservice.repository.GroupRepository;
 
 
@@ -35,7 +35,7 @@ public class GroupService implements UserGroupBaseService<GroupCreateRequest, Gr
 
 
     @Override
-    public GroupResponse getById(Long id) throws ResourceNotFoundException {
+    public GroupResponse getById(Long id) throws NoContentFoundException {
         Optional<Group> Group=GroupRepository.findById(id);
         return modelMapper.map(Group,GroupResponse.class);
     }
@@ -58,19 +58,19 @@ public class GroupService implements UserGroupBaseService<GroupCreateRequest, Gr
     }
 
     @Override
-    public void delete(Long id) throws ResourceNotFoundException {
+    public void delete(Long id) throws NoContentFoundException {
        GroupRepository.deleteById(id);
     }
 
     @Override
-    public List<GroupResponse> listAllUsers(Long id) throws UserNotFoundException {
+    public List<GroupResponse> listAllUsers(Long id) throws NotFoundException {
         Optional<Group> group=GroupRepository.findById(id);
         group.get();
         return null;
     }
 
     @Override
-    public List<GroupResponse> removeListofUsers(Long id, List<Long> userIdList) throws UserNotFoundException {
+    public List<GroupResponse> removeListofUsers(Long id, List<Long> userIdList) throws NotFoundException {
         Optional<Group> group=GroupRepository.findById(id);
         group.get();
         return null;

@@ -9,7 +9,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -23,7 +22,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.EntityListeners;
-
+import jakarta.persistence.FetchType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -41,10 +40,6 @@ public class Plant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    private PlantAddress address;
-
     @CreationTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
@@ -59,4 +54,16 @@ public class Plant {
     private boolean isActive = true;
     private boolean isEnabled = true;
     private boolean isVerified = true;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private PlantAddress address;
+
+    @JsonBackReference // Back part of the reference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Account account;
+
 }

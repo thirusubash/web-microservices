@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 80
   ssl:
     key-store: classpath:keystore.p12
     key-store-password: password
@@ -9,30 +9,17 @@ server:
 
 spring:
   application:
-    name: API-GATEWAY-SERVICE
+    name: api-gateway
+  profiles:
+    active: ${SPRING_PROFILE:dev}  # Sets active profile to the value of SPRING_PROFILE env variable or "dev" if not set
   cloud:
-    discovery:
-      enabled: true
-      locator:
+    config:
+      fail-fast: true
+      label: main
+    kubernetes:
+      discovery:
         enabled: true
-      lower-case-service-id: true
-    gateway:
-      globalcors:
-        corsConfigurations:
-          "[/**]":
-            allowedOrigins: "https://localhost:3000"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-              - PATCH
-              - OPTIONS
-            allowedHeaders:
-              - "*"
-            allowCredentials: true
+        all-namespaces: true
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+  config:
+    import: configserver:${SPRING_CLOUD_CONFIG_URL:http://config-server:8888}  # URL for the config server, defaults to http://config-server:8888  # URL for the config server, defaults to http://config-server:8888

@@ -9,15 +9,16 @@ import {
   CardMedia,
   Container,
   Grid,
-  Paper,
   Snackbar,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { config } from "api/config";
+
 import axiosInstance from "api/axiosInstance";
+import GlowingCircularProgress from "utils/GlowingCircularProgress";
+import { API_CONFIG } from "api/apiConfig";
 
 const Home = () => {
   const [data, setData] = useState([]);
@@ -166,7 +167,7 @@ const Home = () => {
         dataLength={data.length}
         next={fetchData}
         hasMore={hasMore}
-        loader={<div>Loading...</div>}
+        loader={<GlowingCircularProgress />}
         endMessage={
           <p style={{ textAlign: "center" }}>
             <b>Yay! You have more to seen in product page</b>
@@ -189,7 +190,7 @@ const Home = () => {
                     <CardMedia
                       component="img"
                       alt={productData.title}
-                      image={`${config.apibaseurl}/media-service/media/image/${
+                      image={`${API_CONFIG.apibaseurl}/media-service/media/image/${
                         productData.imageUuids[
                           currentImageIndexes[productData.id] || 0
                         ]

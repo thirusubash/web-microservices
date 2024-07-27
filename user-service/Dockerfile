@@ -17,11 +17,11 @@ FROM openjdk:17-slim
 WORKDIR /app
 
 # Copy JAR file from the builder stage
-COPY --from=builder /app/target/*.jar app.jar
+COPY --from=builder /app/target/*.jar ./user-service.jar
 
 
 # Expose port (adjust if needed)
-EXPOSE 8081
+EXPOSE 8080
 
 # Command to run the application
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "user-service.jar"]

@@ -1,3 +1,4 @@
+
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from 'api/axiosInstance';
 
@@ -9,9 +10,14 @@ export const loginUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post('/auth-service/v1/authenticate', userData);
-      return response.data;
+      // Log the response for debugging
+      console.log('Login Response:', response);
+
+      return response.data; // Successfully fetched data
     } catch (error) {
-      return rejectWithValue(error.response.data);
+    
+        return rejectWithValue({message : error.message , Code: error.Code});
+    
     }
   }
 );
@@ -23,7 +29,7 @@ export const logoutUser = createAsyncThunk(
     try {
       await axiosInstance.post('/auth-service/v1/logout', {});
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue({message : error.message , Code: error.Code});
     }
   }
 );
@@ -36,7 +42,7 @@ export const refreshAccessToken = createAsyncThunk(
       const response = await axiosInstance.post('/auth-service/v1/refresh', {});
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue({message : error.message , Code: error.Code});
     }
   }
 );

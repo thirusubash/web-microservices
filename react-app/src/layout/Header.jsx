@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../redux/slices/authSlice";
-import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+
 import {
   AppBar,
   Box,
@@ -21,30 +21,30 @@ import {
   ListItemText,
   Button,
   ListItemButton,
+  Tooltip,
 } from "@mui/material";
 import {
   ShoppingCartCheckout as ShoppingCartCheckoutIcon,
   Notifications as NotificationsIcon,
-  Settings,
   Logout,
   AccountCircle,
   Menu as MenuIcon,
-  OpenInNew,
+  PaletteOutlined,
 } from "@mui/icons-material";
 import logo from "assets/icons/gksvp.png";
+import AnimatedLogo from "./AnimatedLogo";
 
 const buttonData = [
   { label: "Home", path: "/" },
   { label: "Products", path: "/products" },
-  { label: "Job", path: "/job" },
   { label: "Careers", path: "/careers" },
   { label: "About", path: "/about" },
-  { label: "Register", path: "/register" },
+  { label: "Contact Us", path: "/contactus" },
 ];
 
 function Header() {
   const user = useSelector((state) => state.auth.user);
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const isAuthenticated = useSelector((state)=>state.auth.isAuthenticated) 
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -81,40 +81,32 @@ function Header() {
 
   const memoizedButtonData = useMemo(() => buttonData, []);
 
-  const toggleDrawer = (open) => (event) => {
-    if (
-      event &&
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-    setDrawerOpen(open);
-  };
+  const toggleDrawer = useCallback(
+    (open) => (event) => {
+      if (
+        event &&
+        event.type === "keydown" &&
+        (event.key === "Tab" || event.key === "Shift")
+      ) {
+        return;
+      }
+      setDrawerOpen(open);
+    },
+    []
+  );
 
-  const DrawerList = () => {
-    const handleDrawerClose = () => {
-      setDrawerOpen(false);
-    };
-    return (
+  const DrawerList = useCallback(
+    () => (
       <Box
-        sx={{ width: 250 }}
-        role="presentation"
+        sx={{ width: 220 }}
+        role="navigation"
         onClick={toggleDrawer(false)}
         onKeyDown={toggleDrawer(false)}
       >
         <List>
           {memoizedButtonData.map((x) => (
-            <ListItem
-              key={x.label}
-              component={Link}
-              to={x.path}
-              disableGutters
-              sx={{ paddingLeft: 2 }}
-              divider
-            >
+            <ListItem key={x.label} component={Link} to={x.path} disableGutters>
               <ListItemButton>
-                <OpenInNew color="error" />
                 <ListItemText
                   primary={x.label}
                   primaryTypographyProps={{ color: "primary" }}
@@ -122,182 +114,239 @@ function Header() {
               </ListItemButton>
             </ListItem>
           ))}
+          {!isAuthenticated && !user && (
+            <ListItem component={Link} to="/register" disableGutters>
+              <ListItemButton>
+                <ListItemText
+                  primary="Register"
+                  primaryTypographyProps={{ color: "primary" }}
+                />
+              </ListItemButton>
+            </ListItem>
+          )}
         </List>
       </Box>
-    );
-  };
+    ),
+    [memoizedButtonData, isAuthenticated, user, toggleDrawer]
+  );
 
   return (
-    <AppBar
-      color="inherit"
-      position="relative"
-      sx={{ borderBottom: 1, borderColor: "#00695f" }}
-    >
-      <Toolbar
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-        }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IconButton
-            size="large"
-            edge="start"
-            aria-label="open drawer"
-            component={Link}
-            to="/"
-            sx={{ mr: 2 }}
-          >
-            <img width="80px" src={logo} alt="www.gksvp.com" />
-          </IconButton>
-          <Typography
-            className="logo-text"
-            variant="h6"
-            noWrap
-            component={Link}
-            to="/"
-            sx={{
-              display: { xs: "none", sm: "block" },
-              cursor: "pointer",
-              backgroundImage:
-                "linear-gradient(195deg, red, rgb(30, 129, 5), rgb(168, 179, 22))",
-              WebkitBackgroundClip: "text",
-              MozBackgroundClip: "text",
-              backgroundClip: "text",
-              MozTextFillColor: "transparent",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            www.gksvp.com
-          </Typography>
-        </Box>
-        <Box
+    <>
+      <AppBar color="default">
+        <Toolbar
           sx={{
-            display: { xs: "none", md: "flex" },
+            display: "flex",
+            justifyContent: "space-between",
             alignItems: "center",
-            flexGrow: 1,
-            justifyContent: "center",
-            flexWrap: "nowrap",
-            overflowX: "auto",
+            flexWrap: "wrap",
           }}
         >
-          {memoizedButtonData.map((x) => (
-            <Button
-              key={x.label}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <IconButton
+              size="small"
+              edge="start"
+              aria-label="Go to homepage"
               component={Link}
-              to={x.path}
-              variant="text"
+              to="/"
               sx={{
-                color: "primary.light",
-                fontSize: "12px",
-                padding: "4px 8px",
-                mx: 0.5,
-                "@media (max-width: 600px)": {
-                  fontSize: "10px",
-                  padding: "3px 6px",
+                mr: 2,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: {
+                  xs: "40px", // mobile
+                  sm: "50px", // small tablets
+                  md: "80px", // desktop
                 },
-                "@media (max-width: 475px)": {
-                  fontSize: "8px",
-                  padding: "2px 4px",
+                height: {
+                  xs: "40px",
+                  sm: "50px",
+                  md: "80px",
+                },
+                p: 0,
+                "& img": {
+                  width: "100%", // Ensure image fills the button
+                  height: "auto", // Maintain aspect ratio
                 },
               }}
             >
-              {x.label}
-            </Button>
-          ))}
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IconButton
-            size="large"
-            aria-label="show 4 new mails"
-            onClick={goToCart}
+              <img src={logo} alt="Gk Groups Pvt Ltd logo" />
+            </IconButton>
+            <AnimatedLogo />
+          </Box>
+          <Box
+            component="nav"
+            sx={{
+              display: { xs: "none", md: "flex" },
+              alignItems: "center",
+              flexGrow: 1,
+              justifyContent: "center",
+              flexWrap: "nowrap",
+              overflowX: "auto",
+              py: 1,
+            }}
+            role="navigation"
           >
-            <Badge badgeContent={1} color="error">
-              <ShoppingCartCheckoutIcon color="primary" />
-            </Badge>
-          </IconButton>
-          <IconButton size="large" aria-label="show 17 new notifications">
-            <Badge badgeContent={17} color="error">
-              <NotificationsIcon color="primary" />
-            </Badge>
-          </IconButton>
-          {isAuthenticated && user && (
-            <Typography color="text.primary" sx={{ mx: 1 }}>
-              {user.firstName}
-            </Typography>
-          )}
-          <IconButton
-            size="large"
-            edge="end"
-            aria-haspopup="true"
-            onClick={handleClick}
-            title="User Profile" // Example of a descriptive title
+            {memoizedButtonData.map((x) => (
+            <Button
+            key={x.label}
+            component={Link}
+            to={x.path}
+            variant="text"
+            sx={{
+              borderRadius: 60,
+              color: "primary.light",
+              fontSize: "0.850rem",
+              padding: "0.5rem 1rem",
+              mx: 0.5,
+              transition: "all 0.3s ease", // Smooth transition for hover effects
+              "&:hover": {
+                backgroundColor: "primary.light", // Change background color on hover
+                color: "background.paper", // Change text color on hover
+                transform: "scale(1.05)", // Slightly enlarge the button on hover
+                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Add shadow for depth
+              },
+              "@media (max-width: 600px)": {
+                fontSize: "1rem",
+                padding: "0.375rem 0.75rem",
+              },
+              "@media (max-width: 475px)": {
+                fontSize: "0.5rem",
+                padding: "0.25rem 0.5rem",
+              },
+            }}
+            aria-label={x.label}
           >
-            {isAuthenticated && user && user.url ? (
-              <Avatar alt={user.username} src={user.url} />
-            ) : (
-              <Avatar>
-                <AssignmentIndIcon />
-              </Avatar>
+            {x.label}
+          </Button>
+      
+            ))}
+
+            {!isAuthenticated && !user && (
+              <Button
+                component={Link}
+                to="/register"
+                variant="text"
+                color="primary"
+                sx={{
+                  fontSize: "0.75rem",
+                  padding: "0.5rem 1rem",
+                  mx: 0.5,
+                  "@media (max-width: 600px)": {
+                    fontSize: "0.625rem",
+                    padding: "0.375rem 0.75rem",
+                  },
+                  "@media (max-width: 475px)": {
+                    fontSize: "0.5rem",
+                    padding: "0.25rem 0.5rem",
+                  },
+                }}
+                aria-label="Register"
+              >
+                Register
+              </Button>
             )}
-          </IconButton>
-        </Box>
-        <Box sx={{ display: { xs: "flex", md: "none" } }}>
-          <IconButton
-            size="large"
-            aria-label="menu"
-            onClick={toggleDrawer(true)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <SwipeableDrawer
-            anchor="right"
-            open={drawerOpen}
-            onClose={toggleDrawer(false)}
-            onOpen={toggleDrawer(true)} 
-          >
-            <DrawerList />
-          </SwipeableDrawer>
-        </Box>
-      </Toolbar>
-      {isAuthenticated && (
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          onClick={handleClose}
-          transformOrigin={{ horizontal: "right", vertical: "top" }}
-          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-        >
-          <MenuItem
-            onClick={() => {
-              navigate("/profile");
-            }}
-          >
-            <AccountCircle color="info" />
-            <Typography color="text.primary">Profile</Typography>
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              navigate("/settings");
-            }}
-          >
-            <Settings fontSize="small" color="info" />{" "}
-            <Typography color="text.primary">Account</Typography>
-          </MenuItem>
-          <Divider />
-          <MenuItem onClick={handleLogout}>
-            <ListItemIcon>
-              <Logout fontSize="small" color="error" />
-            </ListItemIcon>
-            <Typography color="error.dark">Log Out</Typography>
-          </MenuItem>
-        </Menu>
-      )}
-    </AppBar>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Tooltip title="View Cart" arrow>
+              <IconButton
+                size="large"
+                aria-label="View Cart"
+                onClick={goToCart}
+              >
+                <Badge badgeContent={1} color="error">
+                  <ShoppingCartCheckoutIcon color="primary" />
+                </Badge>
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="View Notifications" arrow>
+              <IconButton
+                size="large"
+                aria-label="View Notifications"
+              >
+                <Badge badgeContent={1} color="error">
+                  <NotificationsIcon color="primary" />
+                </Badge>
+              </IconButton>
+            </Tooltip>
+
+            {isAuthenticated && user && (
+              <Typography color="text.primary" sx={{ mx: 1 }}>
+                {user.firstName}
+              </Typography>
+            )}
+
+            <Tooltip title="Account of current user" arrow>
+              <IconButton
+                size="large"
+                edge="end"
+                aria-haspopup="true"
+                onClick={handleClick}
+                aria-label="Account menu"
+                aria-controls="primary-search-account-menu"
+                color="secondary"
+              >
+                {isAuthenticated && user && user.url ? (
+                  <Avatar alt={user.username} src={user.url} />
+                ) : (
+                  <AccountCircle />
+                )}
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Navigate to themes page" arrow>
+              <IconButton
+                aria-label="Navigate to themes page"
+                onClick={() => navigate("/themes")}
+                color="primary"
+              >
+                <PaletteOutlined />
+              </IconButton>
+            </Tooltip>
+
+            <Box sx={{ display: { xs: "flex", md: "none" } }}>
+              <IconButton
+                size="large"
+                aria-label="Menu"
+                onClick={toggleDrawer(true)}
+              >
+                <MenuIcon />
+              </IconButton>
+              <SwipeableDrawer
+                anchor="right"
+                open={drawerOpen}
+                onClose={toggleDrawer(false)}
+                onOpen={toggleDrawer(true)}
+              >
+                <DrawerList />
+              </SwipeableDrawer>
+            </Box>
+          </Box>
+        </Toolbar>
+      </AppBar>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          "aria-labelledby": "account-menu-button",
+        }}
+      >
+        <MenuItem onClick={handleClose} component={Link} to="/profile">
+          <ListItemIcon>
+            <AccountCircle fontSize="small" />
+          </ListItemIcon>
+          <Typography variant="inherit">Profile</Typography>
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          <Typography variant="inherit">Logout</Typography>
+        </MenuItem>
+      </Menu>
+    </>
   );
 }
 
-export default React.memo(Header);
+export default Header;

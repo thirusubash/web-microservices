@@ -8,28 +8,12 @@ spring:
     name: product-service
   config:
     name: product-service
-    import: optional:configserver:http://192.168.0.153:8888
+    import: configserver:${SPRING_CLOUD_CONFIG_URL:http://config-server:8888}
   profiles:
-    active: dev
-  datasource:
-    url: jdbc:mysql://localhost:3306/product_service
-    username: user_service
-    password: Pa$$w0rd@app
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
-        hbm2ddl.auto: update
+    active: ${SPRING_PROFILE:dev}
+
 management:
   endpoints:
     web:
       exposure:
         include: "*"
-
-# Redis Configuration
-spring.data.redis.host: localhost
-spring.data.redis.port: 6379

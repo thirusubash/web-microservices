@@ -1,15 +1,66 @@
 server:
   port: 8888
-
 spring:
   application:
     name: config-server
   cloud:
     config:
       server:
-        # bootstrap: true
         git:
-          uri: https://github.com/thirusubash/config-repo.git
+          uri: git@github.com:thirusubash/config-repo.git
           search-paths: "*service"
-          # Uncomment the following line if you want to specify a default label
-          # default-label: main
+          default-label: main
+          privateKey: |
+            -----BEGIN PRIVATE KEY-----
+            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
+            prvgj98zcq/5qQb2wmIqp4MiyK89CQ==
+            -----END PRIVATE KEY-----
+          ignoreLocalSshSettings: true

@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import com.gksvp.userservice.dto.role.RoleCreateRequest;
 import com.gksvp.userservice.dto.role.RoleResponse;
 import com.gksvp.userservice.entity.Role;
-import com.gksvp.userservice.exception.ResourceNotFoundException;
-import com.gksvp.userservice.exception.UserNotFoundException;
+import com.gksvp.userservice.exception.NoContentFoundException;
+import com.gksvp.userservice.exception.NotFoundException;
 import com.gksvp.userservice.repository.RoleRepository;
 
 
@@ -35,12 +35,12 @@ public class RoleService implements UserGroupBaseService<RoleCreateRequest , Rol
 
 
     @Override
-    public RoleResponse getById(Long id) throws ResourceNotFoundException {
+    public RoleResponse getById(Long id) throws NoContentFoundException {
         Optional<Role> roleOptional = roleRepository.findById(id);
         if (roleOptional.isPresent()) {
             return modelMapper.map(roleOptional.get(), RoleResponse.class);
         } else {
-            throw new ResourceNotFoundException("Role not found with id: " + id);
+            throw new NoContentFoundException("Role not found with id: " + id);
         }
     }
 
@@ -63,36 +63,36 @@ public class RoleService implements UserGroupBaseService<RoleCreateRequest , Rol
             role = roleRepository.save(role);
             return modelMapper.map(role, RoleResponse.class);
         } else {
-            throw new ResourceNotFoundException("Role not found with id: " + id);
+            throw new NoContentFoundException("Role not found with id: " + id);
         }
     }
 
     @Override
-    public void delete(Long id) throws ResourceNotFoundException {
+    public void delete(Long id) throws NoContentFoundException {
         if (roleRepository.existsById(id)) {
             roleRepository.deleteById(id);
         } else {
-            throw new ResourceNotFoundException("Role not found with id: " + id);
+            throw new NoContentFoundException("Role not found with id: " + id);
         }
     }
 
     @Override
-    public List<RoleResponse> listAllUsers(Long id) throws UserNotFoundException {
+    public List<RoleResponse> listAllUsers(Long id) throws NotFoundException {
         Optional<Role> role = roleRepository.findById(id);
         if (role.isPresent()) {
             return null;
         } else {
-            throw new ResourceNotFoundException("Role not found with id: " + id);
+            throw new NoContentFoundException("Role not found with id: " + id);
         }
     }
 
     @Override
-    public List<RoleResponse> removeListofUsers(Long id, List<Long> userIdList) throws UserNotFoundException {
+    public List<RoleResponse> removeListofUsers(Long id, List<Long> userIdList) throws NotFoundException {
         Optional<Role> role = roleRepository.findById(id);
         if (role.isPresent()) {
             return null;
         } else {
-            throw new ResourceNotFoundException("Role not found with id: " + id);
+            throw new NoContentFoundException("Role not found with id: " + id);
         }
     }   
 }

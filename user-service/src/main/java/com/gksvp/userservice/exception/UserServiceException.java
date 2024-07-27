@@ -15,78 +15,71 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import com.gksvp.userservice.entity.ErrorDetails;
-
-
-
 @RestControllerAdvice
 public class UserServiceException {
 
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
-        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex,
+            WebRequest request) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
-            errors.put("DateTime", LocalDateTime.now().toString());
         });
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        String path = request.getDescription(false);
+        ErrorResponse errorResponse = ErrorResponse.create(HttpStatus.BAD_REQUEST.value(), errors.toString(), path);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-        String errorMessage = "Data integrity violation: " + ex.getMessage();
-
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex,
+            WebRequest request) {
+        String errorMessage = "Already Registered" + ex.getMessage();
         if (ex.getCause() != null && ex.getCause() instanceof ConstraintViolationException) {
-            ConstraintViolationException cause = (ConstraintViolationException) ex.getCause();
-            errorMessage += " Constraint name: " + cause.getConstraintName();  
+
         }
-    
-        return ResponseEntity.badRequest().body(errorMessage);
+
+        String path = request.getDescription(false);
+        ErrorResponse errorResponse = ErrorResponse.create(HttpStatus.CONFLICT.value(), errorMessage, path);
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), HttpStatus.NOT_FOUND.value());
-        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.create(
+                HttpStatus.NOT_FOUND.value(), request.getDescription(false),
+                ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
-    
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), HttpStatus.NOT_FOUND.value());
-        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    @ExceptionHandler(NoContentFoundException.class)
+    public ResponseEntity<Object> handleNoContentException(NoContentFoundException ex, WebRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.create(
+                HttpStatus.NO_CONTENT.value(), request.getDescription(false),
+                ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Object> handleBadRequestException(BadRequestException ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), HttpStatus.NOT_FOUND.value());
-        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+        ErrorResponse errorResponse = ErrorResponse.create(
+                HttpStatus.BAD_REQUEST.value(), request.getDescription(false),
+                ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-
-    @ExceptionHandler(UserException.class)
-    public ResponseEntity<Object> handleUserServiceExceptionException(UserException ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), HttpStatus.NOT_FOUND.value());
-        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex, WebRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.create(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(), request.getDescription(false),
+                ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(EncryptionException.class)
-    public ResponseEntity<Object> handleUserServiceExceptionException(EncryptionException ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), HttpStatus.NOT_FOUND.value());
-        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
-    }
-
-    
 }

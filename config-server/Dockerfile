@@ -1,21 +1,14 @@
-# Use an official Maven image with JDK 17 for building the project
-FROM maven:3.8.4-openjdk-17 AS build
+# Stage 1: Build
+FROM maven:3.8.3-openjdk-17 AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline
+COPY src /app/src
+RUN mvn package -DskipTests
 
-# Copy the source code and pom.xml into the container
-COPY src /home/app/src
-COPY pom.xml /home/app
-
-# Build the application
-RUN mvn -f /home/app/pom.xml clean package
-
-# Use OpenJDK 17 for running the application
-FROM openjdk:17-slim
-
-# Copy the JAR file from the build stage
-COPY --from=build /home/app/target/config-server-*.jar /usr/local/lib/config-server.jar
-
-# Expose the port the app runs on
+# Stage 2: Run
+FROM openjdk:17-jdk-alpine
+WORKDIR /app
+COPY --from=build /app/target/config-server-0.0.1-SNAPSHOT.jar /app/config-server-0.0.1-SNAPSHOT.jar
 EXPOSE 8888
-
-# Run the application
-ENTRYPOINT ["java", "-jar", "/usr/local/lib/config-server.jar"]
+ENTRYPOINT ["java", "-jar", "config-server-0.0.1-SNAPSHOT.jar"]

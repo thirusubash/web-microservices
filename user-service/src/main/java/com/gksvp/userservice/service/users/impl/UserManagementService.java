@@ -7,9 +7,9 @@ import com.gksvp.userservice.dto.phone.PhoneNumberDTO;
 import com.gksvp.userservice.entity.Address;
 import com.gksvp.userservice.entity.PhoneNumber;
 import com.gksvp.userservice.entity.User;
-import com.gksvp.userservice.exception.ResourceNotFoundException;
+import com.gksvp.userservice.exception.NoContentFoundException;
 import com.gksvp.userservice.exception.UnauthorizedOperationException;
-import com.gksvp.userservice.exception.UserNotFoundException;
+import com.gksvp.userservice.exception.NotFoundException;
 import com.gksvp.userservice.repository.AddressRepository;
 import com.gksvp.userservice.repository.GroupRepository;
 import com.gksvp.userservice.repository.PhoneNumberRepository;
@@ -45,7 +45,7 @@ public class UserManagementService implements UserPhoneNoManagementService , Use
 @Override
 public String  addPhoneNumber(Long user_id, PhoneNumberDTO phoneNumbersDTO) throws Exception {
     User user = userRepository.findById(user_id)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found  : "+ user_id));
+            .orElseThrow(() -> new NoContentFoundException("User not found  : "+ user_id));
     PhoneNumber phoneNumber = new PhoneNumber();
     phoneNumber.setUser(user);
     phoneNumber.setNumber(phoneNumbersDTO.getNumber());
@@ -69,7 +69,7 @@ public String  addPhoneNumber(Long user_id, PhoneNumberDTO phoneNumbersDTO) thro
     @Override
     public String removePhoneNumber(Long id) {
         if(!phoneNumberRepository.existsById(id)){
-              throw new UserNotFoundException(" Phone Number not found ");
+              throw new NotFoundException(" Phone Number not found ");
         }
         phoneNumberRepository.deleteById(id);
         return "delted " +id;
@@ -100,7 +100,7 @@ public String  addPhoneNumber(Long user_id, PhoneNumberDTO phoneNumbersDTO) thro
             addressRepository.delete(address);
             return "Address removed successfully"; 
           })
-          .orElseThrow(() -> new UserNotFoundException("Address with ID " + addressId + " not found"));
+          .orElseThrow(() -> new NotFoundException("Address with ID " + addressId + " not found"));
     }
     
 

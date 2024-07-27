@@ -13,6 +13,7 @@ import com.gksvp.company_service.listener.AuditingEntityListener;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -35,21 +36,36 @@ public class Employee extends AbstractEntity {
     private String password;
     private String department;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    @JsonManagedReference("employee-addresses")
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<EmployeeAddress> addresses = new HashSet<>();
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    @JsonManagedReference("employee-accounts")
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<EmployeeBankAccount> accounts = new HashSet<>();
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    @JsonBackReference("company-employees")
-    private Company company;
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Company company; // Add this line
 
-    // @ManyToOne
-    // @JoinColumn(name = "plant_id")
-    // @JsonManagedReference("plant-employees")
-    // private Plant plant;
+    // Helper methods to manage addresses
+    public void addAddress(EmployeeAddress address) {
+        addresses.add(address);
+        address.setEmployee(this);
+    }
+
+    public void removeAddress(EmployeeAddress address) {
+        addresses.remove(address);
+        address.setEmployee(null);
+    }
+
+    // Helper methods to manage bank accounts
+    public void addAccount(EmployeeBankAccount account) {
+        accounts.add(account);
+        account.setEmployee(this);
+    }
+
+    public void removeAccount(EmployeeBankAccount account) {
+        accounts.remove(account);
+        account.setEmployee(null);
+    }
+
 }

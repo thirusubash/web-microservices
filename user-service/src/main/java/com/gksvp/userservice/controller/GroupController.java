@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 
 import com.gksvp.userservice.dto.group.GroupCreateRequest;
 import com.gksvp.userservice.dto.group.GroupResponse;
-import com.gksvp.userservice.exception.ResourceNotFoundException;
+import com.gksvp.userservice.exception.NoContentFoundException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ public class GroupController {
     }
 
     @GetMapping("/{id}")
-    public GroupResponse getGroupById(@PathVariable Long id) throws ResourceNotFoundException {
+    public GroupResponse getGroupById(@PathVariable Long id) throws NoContentFoundException {
         log.info("Fetching group by id: {}", id);
         return groupService.getById(id);
     }
@@ -47,13 +47,13 @@ public class GroupController {
     }
 
     @PutMapping("/{id}")
-    public GroupResponse updateGroup(@PathVariable Long id, @RequestBody @Valid GroupCreateRequest updatedGroup) throws ResourceNotFoundException {
+    public GroupResponse updateGroup(@PathVariable Long id, @RequestBody @Valid GroupCreateRequest updatedGroup) throws NoContentFoundException {
         log.info("Updating group with id {}: {}", id, updatedGroup);
         return groupService.update(id, updatedGroup);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteGroup(@PathVariable Long id) throws ResourceNotFoundException {
+    public void deleteGroup(@PathVariable Long id) throws NoContentFoundException {
         log.info("Deleting group with id: {}", id);
         groupService.delete(id);
     }

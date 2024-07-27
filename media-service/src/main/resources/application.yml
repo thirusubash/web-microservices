@@ -1,47 +1,22 @@
-server:
-  port: 8005
-  servlet:
-    context-path: /media-service
-
 spring:
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
-
-  kafka:
-    producer:
-      bootstrap-servers: localhost:9092
-  config:
-    import: "optional:configserver:http://localhost:8888"
-
+  profiles:
+    active: ${SPRING_PROFILE:dev}
   application:
     name: media-service
-  datasource:
-    url: jdbc:mysql://localhost:3306/media_service
-    username: user_service
-    password: Pa$$w0rd@app
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
-        hbm2ddl.auto: update
-  profiles:
-    active: dev
+  config:
+    import: configserver:${SPRING_CLOUD_CONFIG_URL:http://config-server:8888}
+  cloud:
+    config:
+      fail-fast: true
+      label: main
+    kubernetes:
+      discovery:
+        enabled: true
+        all-namespaces: true # Optional: discover services in all namespaces
 
 management:
   endpoints:
     web:
+      base-path: /actuator
       exposure:
-        include: health,info,metrics,beans
-
-logging:
-  level:
-    root: WARN
-
-upload:
-  dir: media/
+        include: "*"

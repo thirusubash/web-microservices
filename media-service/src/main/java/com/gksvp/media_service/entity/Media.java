@@ -21,7 +21,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Media {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private String fileName; // The name of the image file

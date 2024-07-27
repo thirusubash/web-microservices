@@ -1,138 +1,178 @@
 import React, { useCallback } from "react";
-import { Box, Grid, Typography, IconButton, Link } from "@mui/material";
-import GpayIcon from "assets/icons/google-pay-mark_800.svg";
-
+import {
+  Box,
+  Typography,
+  IconButton,
+  Link,
+  useTheme,
+} from "@mui/material";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import CallSharpIcon from "@mui/icons-material/CallSharp";
-import DraftsRounded from "@mui/icons-material/DraftsRounded";
-import WifiCalling3SharpIcon from "@mui/icons-material/WifiCalling3Sharp";
-import LocalPhoneSharpIcon from "@mui/icons-material/LocalPhoneSharp";
+import EmailIcon from "@mui/icons-material/Email";
+import PhoneIcon from "@mui/icons-material/Phone";
+import PaymentIcon from "@mui/icons-material/Payment";
+import { keyframes } from "@mui/system";
+
+// Extract theme colors
+const getThemeColors = (theme) => ({
+  primaryLight: theme.palette.primary.light,
+  primaryMain: theme.palette.primary.main,
+  primaryDark: theme.palette.primary.dark,
+  secondaryLight: theme.palette.secondary.light,
+  secondaryMain: theme.palette.secondary.main,
+  secondaryDark: theme.palette.secondary.dark,
+});
 
 const Footer = () => {
-  const num = "+919787048122";
-  const name = "HI subash, ";
-  const msg = "i want to know product details ";
-  const supportmail = "support@gksvp.com";
+  const theme = useTheme();
+  const colors = getThemeColors(theme);
 
-  const openLocation = useCallback(() => {
-    window.open("https://goo.gl/maps/xA1wdTRdidw4vUVcA", "_blank");
+  // Define keyframes with fixed colors
+  const wave = keyframes`
+    0% { transform: scale(1); }
+    25% { transform: scale(1.1); }
+    50% { transform: scale(1.2); }
+    75% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  `;
+
+  const colorChange = keyframes`
+  0% { color: ${colors.primaryLight}; }
+  10% { color: ${colors.primaryMain}; }
+  20% { color: ${colors.primaryDark}; }
+  30% { color: ${colors.secondaryLight}; }
+  40% { color: ${colors.secondaryMain}; }
+  50% { color: ${colors.secondaryDark}; }
+  60% { color: ${colors.secondaryMain}; }
+  70% { color: ${colors.secondaryLight}; }
+  80% { color: ${colors.primaryDark}; }
+  90% { color: ${colors.primaryMain}; }
+  100% { color: ${colors.primaryLight}; }
+`;
+
+  const handleAction = useCallback((url) => {
+    window.open(url, "_blank");
   }, []);
-
-  const sendWhatsApp = useCallback(() => {
-    const whatsappURL = `https://wa.me/${num}?text=${encodeURIComponent(
-      name
-    )}%20%20${encodeURIComponent(msg)}`;
-    window.open(whatsappURL, "_blank");
-  }, [num, name, msg]);
-
-  const openFacebook = useCallback(() => {
-    window.open("https://facebook.com", "_blank");
-  }, []);
-
-  const openLinkedIn = useCallback(() => {
-    window.open("https://linkedin.com", "_blank");
-  }, []);
-
-  const sendMail = useCallback(() => {
-    window.open(`mailto:${supportmail}`);
-  }, [supportmail]);
 
   return (
     <Box
       component="footer"
-      sx={{
-        borderTop: 1,
-        borderColor: "#00695f",
-        mt: "auto",
-        py: 2,
-        px: 2,
-      }}
+      align="center"
+      bgcolor="initial"
+      sx={{ padding: "1rem" }}
+      mb={0}
+      zIndex={1500}
     >
-      <Grid container spacing={2} justifyContent="center" alignItems="center">
-        <Grid item>
-          <Typography
-            color="primary.dark"
-            variant="body1"
-            sx={{ display: { xs: "none", sm: "none", md: "flex" } }}
-          >
-            Connect with us:
-          </Typography>
-        </Grid>
-        <Grid item>
-          <IconButton
-            onClick={() => {
-              window.location = "tel:+918940301427";
-            }}
-            aria-label="Call us via WiFi Calling"
-          >
-            <WifiCalling3SharpIcon color="primary" />
-          </IconButton>
-        </Grid>
-        <Grid item>
-          <IconButton
-            onClick={() => {
-              window.location = "tel:+9104343291748";
-            }}
-            aria-label="Call us via Local Phone"
-          >
-            <LocalPhoneSharpIcon color="primary" />
-          </IconButton>
-        </Grid>
-        <Grid item>
-          <IconButton
-            onClick={() => {
-              window.location = "tel:+916369042826";
-            }}
-            aria-label="Call us via Mobile Phone"
-          >
-            <CallSharpIcon color="primary" />
-          </IconButton>
-        </Grid>
-        <Grid item>
-          <IconButton
-            onClick={sendWhatsApp}
-            aria-label="Send us a WhatsApp message"
-          >
-            <WhatsAppIcon color="primary" />
-          </IconButton>
-        </Grid>
-        <Grid item>
-          <IconButton onClick={openFacebook} aria-label="Visit us on Facebook">
-            <FacebookIcon color="primary" />
-          </IconButton>
-        </Grid>
-        <Grid item>
-          <IconButton onClick={openLinkedIn} aria-label="Visit us on LinkedIn">
-            <LinkedInIcon color="primary" />
-          </IconButton>
-        </Grid>
-        <Grid item>
-          <IconButton onClick={sendMail} aria-label="Send us an email">
-            <DraftsRounded color="primary" />
-          </IconButton>
-        </Grid>
-        <Grid item>
-          <IconButton
-            onClick={openLocation}
-            aria-label="Find us on Google Maps"
-          >
-            <LocationOnIcon color="primary" />
-          </IconButton>
-        </Grid>
-        <Grid item>
-          <IconButton aria-label="Google Pay">
-            <img src={GpayIcon} alt="Google Pay" />
-          </IconButton>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="body2" color="primary.light" align="center">
-            © 2023 Your Company. All rights reserved.
-          </Typography>
-        </Grid>
-      </Grid>
+      {/* Floating Icons */}
+      <IconButton
+        onClick={() => handleAction(`tel:+919787048122`)}
+        aria-label="Call us"
+        color="primary"
+        sx={{
+          animation: `${wave} 5s ease-in-out infinite, ${colorChange} 6s ease-in-out infinite`,
+          transition: 'transform 0.3s ease, color 0.3s ease',
+        }}
+      >
+        <PhoneIcon />
+      </IconButton>
+      <IconButton
+        onClick={() =>
+          handleAction(
+            `https://wa.me/+919787048122?text=Hi%20Subash,%20I%20want%20to%20know%20more%20about%20your%20products.`
+          )
+        }
+        aria-label="Send us a WhatsApp message"
+        color="primary"
+        sx={{
+          animation: `${wave} 5s ease-in-out infinite, ${colorChange} 6s ease-in-out infinite`,
+          animationDelay: "0.5s",
+          transition: 'transform 0.3s ease, color 0.3s ease',
+        }}
+      >
+        <WhatsAppIcon />
+      </IconButton>
+      <IconButton
+        onClick={() => handleAction(`mailto:support@gksvp.com`)}
+        aria-label="Send us an email"
+        color="primary"
+        sx={{
+          animation: `${wave} 5s ease-in-out infinite, ${colorChange} 6s ease-in-out infinite`,
+          animationDelay: "1s",
+          transition: 'transform 0.3s ease, color 0.3s ease',
+        }}
+      >
+        <EmailIcon />
+      </IconButton>
+      <IconButton
+        onClick={() => handleAction(`https://goo.gl/maps/xA1wdTRdidw4vUVcA`)}
+        aria-label="Find us on Google Maps"
+        color="primary"
+        sx={{
+          animation: `${wave} 5s ease-in-out infinite, ${colorChange} 6s ease-in-out infinite`,
+          animationDelay: "1.5s",
+          transition: 'transform 0.3s ease, color 0.3s ease',
+        }}
+      >
+        <LocationOnIcon />
+      </IconButton>
+      <IconButton
+        aria-label="Payment options"
+        color="primary"
+        sx={{
+          animation: `${wave} 5s ease-in-out infinite, ${colorChange} 6s ease-in-out infinite`,
+          animationDelay: "2s",
+          transition: 'transform 0.3s ease, color 0.3s ease',
+        }}
+      >
+        <PaymentIcon />
+      </IconButton>
+
+      {/* Social Media Links */}
+      <Link
+        href="https://www.facebook.com/profile.php?id=61561886770605&mibextid=ZbWKwL"
+        target="_blank"
+        rel="noopener noreferrer"
+        color="inherit"
+        underline="none"
+        aria-label="Visit us on Facebook"
+      >
+        <IconButton
+          color="primary"
+          sx={{
+            animation: `${wave} 5s ease-in-out infinite, ${colorChange} 6s ease-in-out infinite`,
+            animationDelay: "2.5s",
+            transition: 'transform 0.3s ease, color 0.3s ease',
+          }}
+        >
+          <FacebookIcon />
+        </IconButton>
+      </Link>
+      <Link
+        href="https://www.linkedin.com/in/thirumalaivasank"
+        target="_blank"
+        rel="noopener noreferrer"
+        color="inherit"
+        underline="none"
+        aria-label="Visit us on LinkedIn"
+      >
+        <IconButton
+          color="primary"
+          sx={{
+            animation: `${wave} 5s ease-in-out infinite, ${colorChange} 6s ease-in-out infinite`,
+            animationDelay: "3s",
+            transition: 'transform 0.3s ease, color 0.3s ease',
+          }}
+        >
+          <LinkedInIcon />
+        </IconButton>
+      </Link>
+
+      {/* Copyright Notice */}
+      <Typography variant="body2" color="textSecondary" align="center" sx={{ marginTop: 1 }}>
+        © 2024 gksvp.com. All rights reserved.
+      </Typography>
     </Box>
   );
 };

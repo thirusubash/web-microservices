@@ -49,8 +49,8 @@ public class ImageUploadService {
             String originalFilename = file.getOriginalFilename();
             String fileExtension = getFileExtension(originalFilename);
             String newFilename = generateUniqueFilename() + fileExtension;
-
-            String directoryPath = "src/main/resources/media" + File.separator + dir;
+            String pvcMountPath = "/mnt/data";
+            String directoryPath = pvcMountPath + File.separator + dir;
             String filePath = saveFileToSystem(file, newFilename, directoryPath);
 
             Media media = new Media();
@@ -70,6 +70,7 @@ public class ImageUploadService {
     }
 
     private String saveFileToSystem(MultipartFile file, String newFilename, String directoryPath) throws IOException {
+
         Path directory = Paths.get(directoryPath);
 
         if (!Files.exists(directory)) {

@@ -2,7 +2,7 @@ package com.gksvp.userservice.service.users.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.gksvp.userservice.entity.User;
-import com.gksvp.userservice.exception.UserNotFoundException;
+import com.gksvp.userservice.exception.NotFoundException;
 import com.gksvp.userservice.repository.UserRepository;
 import com.gksvp.userservice.service.users.CheckUserInfo;
 import com.gksvp.userservice.service.users.GetUserInfo;
@@ -43,13 +43,13 @@ public class UserInformation implements CheckUserInfo, GetUserInfo {
      * 
      * @param email The email of the user to retrieve
      * @return The user object
-     * @throws UserNotFoundException if the user with the specified email is not found
+     * @throws NotFoundException if the user with the specified email is not found
      */
     @Override
     public User getUserByEmail(String email) {
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new UserNotFoundException("Could not find user with email: " + email);
+            throw new NotFoundException("Could not find user with email: " + email);
     }
     return user;
 
@@ -60,13 +60,13 @@ public class UserInformation implements CheckUserInfo, GetUserInfo {
      * 
      * @param username The username of the user to retrieve
      * @return The user object
-     * @throws UserNotFoundException if the user with the specified username is not found
+     * @throws NotFoundException if the user with the specified username is not found
      */
     @Override
     public User getUserByUsername(String username) {
         User user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new UserNotFoundException("Could not find user with this: " + username);
+            throw new NotFoundException("Could not find user with this: " + username);
     }
     return user;
 
@@ -77,11 +77,12 @@ public class UserInformation implements CheckUserInfo, GetUserInfo {
      * 
      * @param id The ID of the user to retrieve
      * @return The user object
-     * @throws UserNotFoundException if the user with the specified ID is not found
+     * @throws NotFoundException if the user with the specified ID is not found
      */
     @Override
     public User getUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Could not find user with ID: " + id));
+                .orElseThrow(() -> new NotFoundException("Could not find user with ID: " + id));
     }
+
 }

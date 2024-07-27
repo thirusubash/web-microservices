@@ -1,37 +1,16 @@
-server:
-  port: 8001
-  servlet:
-    context-path: /auth-service
-
 spring:
-  kafka:
-    producer:
-      bootstrap-servers: localhost:9092
-  config:
-    import: "optional:configserver:http://localhost:8888"
-
+  profiles:
+    active: ${SPRING_PROFILE:dev}
   application:
     name: auth-service
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
-        hbm2ddl.auto: update
-  profiles:
-    active: dev
+  config:
+    import: configserver:${SPRING_CLOUD_CONFIG_URL:http://config-server:8888}
+  cloud:
+    config:
+      fail-fast: true
+      label: main
+    kubernetes:
+      discovery:
+        enabled: true
+        all-namespaces: true # Optional: discover services in all namespaces
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics,beans
-
-logging:
-  level:
-    root: DEBUG
-
-jwt:
-  secret: emGyGjAFVtKvozZruhibCsua0om9XOr3vfX171BOSVQW47xCDhz7ABTN5kFMnFQ8

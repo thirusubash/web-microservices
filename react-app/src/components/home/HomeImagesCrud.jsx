@@ -21,7 +21,7 @@ import AddIcon from "@mui/icons-material/Add";
 import ToggleOnIcon from "@mui/icons-material/ToggleOn";
 import ToggleOffIcon from "@mui/icons-material/ToggleOff";
 import { styled } from "@mui/system";
-import axiosInstance from "api/axiosInstance";
+import axiosInstance, { multipartAxiosInstance } from "api/axiosInstance";
 
 const HiddenInput = styled("input")({
   display: "none",
@@ -45,7 +45,7 @@ const HomeImagesCrud = ({ selectedHomePage, notification }) => {
   const fetchImages = async () => {
     try {
       const response = await axiosInstance.post(
-        "https://localhost:8080/media-service/media/findbyAll",
+        "/media-service/media/findbyAll",
         uuids
       );
 
@@ -156,15 +156,16 @@ const HomeImagesCrud = ({ selectedHomePage, notification }) => {
     formData.append("description", description);
 
     try {
-      const response = await axiosInstance.post(
+      // Upload the file
+      const uploadResponse = await multipartAxiosInstance.post(
         `/media-service/media/upload/homepage/${selectedHomePage.id}`,
         formData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
           onUploadProgress: (progressEvent) => {
-            setUploadProgress(
-              Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            const progress = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
             );
+            setUploadProgress(progress);
           },
         }
       );
@@ -172,14 +173,7 @@ const HomeImagesCrud = ({ selectedHomePage, notification }) => {
       // Perform any necessary update after successful upload
       await axiosInstance.patch(
         `/homepage-service/v1/updateimage/${selectedHomePage.id}`,
-        response.data,
-        {
-          onUploadProgress: (progressEvent) => {
-            setUploadProgress(
-              Math.round((progressEvent.loaded * 100) / progressEvent.total)
-            );
-          },
-        }
+        uploadResponse.data // Use uploadResponse.data here
       );
 
       // Notification on success
@@ -188,10 +182,12 @@ const HomeImagesCrud = ({ selectedHomePage, notification }) => {
         message: "Image uploaded successfully!",
         severity: "success",
       });
+
       // Reset form and state
       handleCloseDialog();
     } catch (error) {
       console.error("Error uploading image:", error);
+
       notification({
         open: true,
         message: "Error uploading image: " + error.message,

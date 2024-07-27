@@ -44,7 +44,7 @@ public class JwtAuthenticationController {
     }
 
     @PostMapping("/register")
-    String register(@RequestBody UserCreateRequest userCreateRequest) {
+    String register(@RequestBody UserCreateRequest userCreateRequest) throws Exception {
 
         return userService.createUser(userCreateRequest);
 

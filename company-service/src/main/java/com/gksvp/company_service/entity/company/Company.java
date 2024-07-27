@@ -11,6 +11,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.EntityListeners;
@@ -55,16 +56,16 @@ public class Company extends AbstractEntity {
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
-    // @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch =
-    // FetchType.LAZY)
-    // @JsonManagedReference("company-plants")
-    // private Set<Plant> plants = new HashSet<>();
+    @JsonManagedReference // Forward part of the reference
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Plant> plants = new HashSet<>();
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("company-employees")
-    private Set<Employee> employees;
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference("company-accounts")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Account> accounts = new HashSet<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Employee> employees = new HashSet<>();
+
 }
