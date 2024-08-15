@@ -20,6 +20,8 @@ import axiosInstance from "api/axiosInstance";
 import GlowingCircularProgress from "utils/GlowingCircularProgress";
 import { API_CONFIG } from "api/apiConfig";
 
+const apiGateway = API_CONFIG.apiGatewayUrl;
+
 const Home = () => {
   const [data, setData] = useState([]);
   const [currentImageIndexes, setCurrentImageIndexes] = useState({});
@@ -62,7 +64,7 @@ const Home = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const response = await axiosInstance.get("/homepage-service/v1/visible", {
+      const response = await axiosInstance.get("/home/v1/visible", {
         params: pageable,
       });
 
@@ -70,11 +72,9 @@ const Home = () => {
 
       if (responseData?.content && Array.isArray(responseData.content)) {
         setData((prevData) => {
-          // Filter out items that are already present in prevData
           const newData = responseData.content.filter(
             (item) => !prevData.some((prevItem) => prevItem.id === item.id)
           );
-          // Concatenate the unique newData with prevData
           return [...prevData, ...newData];
         });
 
@@ -170,7 +170,7 @@ const Home = () => {
         loader={<GlowingCircularProgress />}
         endMessage={
           <p style={{ textAlign: "center" }}>
-            <b>Yay! You have more to seen in product page</b>
+            <b>Yay! You have seen it all!</b>
           </p>
         }
       >
@@ -189,11 +189,13 @@ const Home = () => {
                   productData.imageUuids.length > 0 && (
                     <CardMedia
                       component="img"
-                      alt={productData.title}
-                      image={`${API_CONFIG.apibaseurl}/media-service/media/image/${
-                        productData.imageUuids[
-                          currentImageIndexes[productData.id] || 0
-                        ]
+                      alt={productData?.title || "Product Image"}
+                      image={`${
+                        apiGateway
+                      }/media/v1/image/${
+                        productData?.imageUuids?.[
+                          currentImageIndexes?.[productData?.id] || 0
+                        ] || "defaultImageUuid"
                       }`}
                     />
                   )}

@@ -1,11 +1,11 @@
-// authConfig.js
+// src/authConfig.js
 import { LogLevel } from "@azure/msal-browser";
 
 export const msalConfig = {
   auth: {
     clientId: process.env.REACT_APP_MICROSOFT_OAUTH_CLIENT_ID,
     authority: "https://login.microsoftonline.com/common",
-    redirectUri: process.env.REACT_APP_MICROSOFT_OAUTH_REDIRECT_URI || "http://localhost:3000",
+    redirectUri: process.env.REACT_APP_MICROSOFT_OAUTH_REDIRECT_URI,
   },
   cache: {
     cacheLocation: "sessionStorage", // This configures where your cache will be stored

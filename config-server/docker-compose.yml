@@ -1,8 +1,8 @@
-version: '3.8'
+version: "3.8"
 
 services:
   config-server:
-    build: .
+    build: ./DevDockerfile
     ports:
       - "8888:8888"
     environment:

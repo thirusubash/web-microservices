@@ -16,7 +16,7 @@ import DOMPurify from "dompurify";
 import axiosInstance from "api/axiosInstance";
 import { Helmet } from "react-helmet-async";
 import useSnackbar from "hooks/useSnackbar";
-import Login from "./oauth/GoogleLogin";
+import OauthLogin from "./OauthLogin";
 
 const countryCodes = [
   {
@@ -166,7 +166,7 @@ const RegistrationForm = () => {
         setLoading(true);
         console.log("Submitting data:", userData); // Debugging log
         const response = await axiosInstance.post(
-          "/auth-service/v1/register",
+          "/auth/v1/register",
           userData
         );
         console.log("Response:", response); // Debugging log
@@ -209,12 +209,8 @@ const RegistrationForm = () => {
           `}
         </script>
       </Helmet>
+      <OauthLogin/>
 
-      <Box>
-        <Typography textAlign="center">-- OR -- </Typography>
-<Login/>
-        <br></br>
-      </Box>
       <Container maxWidth="sm">
         <Typography variant="h6" align="center" color="primary" gutterBottom>
           Registration

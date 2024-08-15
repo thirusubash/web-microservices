@@ -44,7 +44,7 @@ const buttonData = [
 
 function Header() {
   const user = useSelector((state) => state.auth.user);
-  const isAuthenticated = useSelector((state)=>state.auth.isAuthenticated) 
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -188,38 +188,37 @@ function Header() {
             role="navigation"
           >
             {memoizedButtonData.map((x) => (
-            <Button
-            key={x.label}
-            component={Link}
-            to={x.path}
-            variant="text"
-            sx={{
-              borderRadius: 60,
-              color: "primary.light",
-              fontSize: "0.850rem",
-              padding: "0.5rem 1rem",
-              mx: 0.5,
-              transition: "all 0.3s ease", // Smooth transition for hover effects
-              "&:hover": {
-                backgroundColor: "primary.light", // Change background color on hover
-                color: "background.paper", // Change text color on hover
-                transform: "scale(1.05)", // Slightly enlarge the button on hover
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Add shadow for depth
-              },
-              "@media (max-width: 600px)": {
-                fontSize: "1rem",
-                padding: "0.375rem 0.75rem",
-              },
-              "@media (max-width: 475px)": {
-                fontSize: "0.5rem",
-                padding: "0.25rem 0.5rem",
-              },
-            }}
-            aria-label={x.label}
-          >
-            {x.label}
-          </Button>
-      
+              <Button
+                key={x.label}
+                component={Link}
+                to={x.path}
+                variant="text"
+                sx={{
+                  borderRadius: 60,
+                  color: "primary.light",
+                  fontSize: "0.850rem",
+                  padding: "0.5rem 1rem",
+                  mx: 0.5,
+                  transition: "all 0.3s ease", // Smooth transition for hover effects
+                  "&:hover": {
+                    backgroundColor: "primary.light", // Change background color on hover
+                    color: "background.paper", // Change text color on hover
+                    transform: "scale(1.05)", // Slightly enlarge the button on hover
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Add shadow for depth
+                  },
+                  "@media (max-width: 600px)": {
+                    fontSize: "1rem",
+                    padding: "0.375rem 0.75rem",
+                  },
+                  "@media (max-width: 475px)": {
+                    fontSize: "0.5rem",
+                    padding: "0.25rem 0.5rem",
+                  },
+                }}
+                aria-label={x.label}
+              >
+                {x.label}
+              </Button>
             ))}
 
             {!isAuthenticated && !user && (
@@ -229,11 +228,20 @@ function Header() {
                 variant="text"
                 color="primary"
                 sx={{
-                  fontSize: "0.75rem",
+                  borderRadius: 60,
+                  color: "primary.light",
+                  fontSize: "0.850rem",
                   padding: "0.5rem 1rem",
                   mx: 0.5,
+                  transition: "all 0.3s ease", // Smooth transition for hover effects
+                  "&:hover": {
+                    backgroundColor: "primary.light", // Change background color on hover
+                    color: "background.paper", // Change text color on hover
+                    transform: "scale(1.05)", // Slightly enlarge the button on hover
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Add shadow for depth
+                  },
                   "@media (max-width: 600px)": {
-                    fontSize: "0.625rem",
+                    fontSize: "1rem",
                     padding: "0.375rem 0.75rem",
                   },
                   "@media (max-width: 475px)": {
@@ -260,10 +268,7 @@ function Header() {
               </IconButton>
             </Tooltip>
             <Tooltip title="View Notifications" arrow>
-              <IconButton
-                size="large"
-                aria-label="View Notifications"
-              >
+              <IconButton size="large" aria-label="View Notifications">
                 <Badge badgeContent={1} color="error">
                   <NotificationsIcon color="primary" />
                 </Badge>

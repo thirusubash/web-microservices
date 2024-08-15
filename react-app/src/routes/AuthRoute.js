@@ -3,19 +3,19 @@ import { useSelector } from "react-redux";
 import { Navigate, useLocation } from "react-router-dom";
 import PropTypes from 'prop-types';
 
-const AuthRoute = ({ element: Component, ...rest }) => {
+const AuthRoute = ({ children }) => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const location = useLocation();
 
   return isAuthenticated ? (
-    <Component {...rest} />
+    children
   ) : (
     <Navigate to="/signin" state={{ from: location }} />
   );
 };
 
 AuthRoute.propTypes = {
-  element: PropTypes.elementType.isRequired,  // Expecting a React component type
+  children: PropTypes.node.isRequired,
 };
 
 export default AuthRoute;

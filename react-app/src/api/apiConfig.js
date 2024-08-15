@@ -3,11 +3,10 @@
 /**
  * API Configuration
  * @type {Object}
- * @property {string} apiBaseUrl - Base URL for the API, defaults to 'https://localhost:80'
- * @property {string} [googleMapsApiKey] - Optional Google Maps API Key
+ * @property {string} apiGatewayUrl - The base URL for the API, sourced from environment variables.
  */
 export const API_CONFIG = {
-  apiBaseUrl: process.env.REACT_APP_API_GATEWAY_BASE_URL || 'https://localhost:80', // Default URL
+  apiGatewayUrl: process.env.REACT_APP_API_GATEWAY_BASE_URL || 'https://api.gksvp.com', // Fallback to localhost if not set
 };
 
 

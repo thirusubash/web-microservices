@@ -10,8 +10,8 @@ import {
   CardContent,
   CardActions,
   CardHeader,
+  Grid,
 } from "@mui/material";
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import TryOutlinedIcon from "@mui/icons-material/TryOutlined";
@@ -112,9 +112,9 @@ function ThemeGallery() {
         </Tooltip>
       </Box>
 
-      <Grid2 mt={2} container spacing={2}>
+      <Grid mt={2} container spacing={2}>
         {themes.map((theme) => (
-          <Grid2 item xs={12} sm={6} md={4} lg={3} key={theme.id}>
+          <Grid item xs={12} sm={6} md={4} lg={3} key={theme.id}>
             <Card
               sx={{
                 backgroundColor:
@@ -220,9 +220,9 @@ function ThemeGallery() {
                 </Button>
               </CardActions>
             </Card>
-          </Grid2>
+          </Grid>
         ))}
-      </Grid2>
+      </Grid>
 
       {/* Dialog for MaterialUIThemeGenerator */}
       <Dialog fullScreen open={openThemeGenerator} onClose={handleClose}>

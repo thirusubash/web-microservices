@@ -1,0 +1,19 @@
+{
+  "name": "user-service",
+  "dockerFile": "Dockerfile",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "redhat.java",
+        "vscjava.vscode-maven"
+      ],
+      "settings": {
+        "java.jdt.ls.java.home": "/usr/lib/jvm/java-17-openjdk"
+      }
+    }
+  },
+  "runArgs": ["--network", "host"],
+  "postCreateCommand": "mvn clean install",
+  "forwardPorts": [8081]
+}

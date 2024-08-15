@@ -58,7 +58,7 @@ const HomePageCrud = () => {
   const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await axiosInstance.get("/homepage-service/v1", {
+      const response = await axiosInstance.get("/home/v1", {
         params: { ...pageable, searchTerm },
       });
       setHomePages(response.data.content || []);
@@ -73,7 +73,7 @@ const HomePageCrud = () => {
   const handleDelete = useCallback(
     async (id) => {
       try {
-        await axiosInstance.delete(`/homepage-service/v1/${id}`);
+        await axiosInstance.delete(`/home/v1/${id}`);
         handleSnackbarNotification({
           open: true,
           message: "HomePage deleted successfully!",
@@ -95,7 +95,7 @@ const HomePageCrud = () => {
   const handleToggleVisibility = useCallback(
     async (id, visibility) => {
       try {
-        await axiosInstance.patch(`/homepage-service/v1/${id}`, {
+        await axiosInstance.patch(`/home/v1/${id}`, {
           visibility: !visibility,
         });
         await fetchData();

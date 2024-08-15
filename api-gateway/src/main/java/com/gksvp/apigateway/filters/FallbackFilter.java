@@ -11,18 +11,23 @@ import reactor.core.publisher.Mono;
 
 @Component
 public class FallbackFilter implements GatewayFilter {
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        if (exchange.getResponse().getStatusCode() == HttpStatus.SERVICE_UNAVAILABLE) {
+        return chain.filter(exchange).then(Mono.defer(() -> {
+            HttpStatus statusCode = HttpStatus.resolve(exchange.getResponse().getStatusCode().value());
             ServerHttpResponse response = exchange.getResponse();
-            response.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE); // Change to a 200
-            return response.writeWith(Mono.just(response.bufferFactory().wrap(
-                    "Service Unavailable. Please try again later.".getBytes())));
-        } else {
-            ServerHttpResponse response = exchange.getResponse();
-            response.setStatusCode(HttpStatus.FORBIDDEN); // Change to a 403
-            return response.writeWith(Mono.just(response.bufferFactory().wrap(
-                    "You don't have access to this page. Contact your administrator.".getBytes())));
-        }
+            if (statusCode == HttpStatus.SERVICE_UNAVAILABLE) {
+                response.setStatusCode(HttpStatus.OK);
+                return response.writeWith(Mono.just(response.bufferFactory().wrap(
+                        "Service Unavailable. Please try again later.".getBytes())));
+            } else if (statusCode == HttpStatus.FORBIDDEN) {
+                response.setStatusCode(HttpStatus.FORBIDDEN);
+                return response.writeWith(Mono.just(response.bufferFactory().wrap(
+                        "You don't have access to this page. Contact your administrator.".getBytes())));
+            }
+            return Mono.empty();
+        }));
     }
 }
+

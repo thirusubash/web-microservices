@@ -1,6 +1,6 @@
 server:
   servlet:
-    context-path: /homepage-service
+    context-path: /home
 
 spring:
   application:

@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   mysql:
     image: mysql:latest
@@ -14,97 +12,96 @@ services:
       - mysql-data:/var/lib/mysql
     restart: always
 
-  config-server:
-    build: ./config-server/
-    ports:
-      - "8888:8888"
-    environment:
-      SPRING_PROFILES_ACTIVE: default
-    volumes:
-      - ./config-server/config:/config
-    depends_on:
-      - mysql
-    restart: always
+  # config-server:
+  #   build: ./config-server/
+  #   ports:
+  #     - "8888:8888"
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: default
+  #   volumes:
+  #     - ./config-server/config:/config
+  #   depends_on:
+  #     - mysql
+  #   restart: always
 
-  discovery-service:
-    build: ./discovery-service/
-    ports:
-      - "8761:8761"
-    environment:
-      SPRING_PROFILES_ACTIVE: default
-    depends_on:
-      - config-server
-    restart: always
+  # discovery-service:
+  #   build: ./discovery-service/
+  #   ports:
+  #     - "8761:8761"
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: default
+  #   depends_on:
+  #     - config-server
+  #   restart: always
 
-  user-service:
-    build: ./user-service/
-    ports:
-      - "8000:8000"
-    environment:
-      DATABASE_HOST: mysql
-      DATABASE_USER: user_service
-      DATABASE_PASSWORD: Pa$$w0rd@app
-      DATABASE_NAME: user_service
-      SPRING_PROFILES_ACTIVE: default
-    depends_on:
-      - mysql
-      - config-server
-      - discovery-service
-    restart: always
+  # user-service:
+  #   build: ./user-service/
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     DATABASE_HOST: mysql
+  #     DATABASE_USER: user_service
+  #     DATABASE_PASSWORD: Pa$$w0rd@app
+  #     DATABASE_NAME: user_service
+  #     SPRING_PROFILES_ACTIVE: default
+  #   depends_on:
+  #     - mysql
+  #     - config-server
+  #     - discovery-service
+  #   restart: always
 
-  auth-service:
-    build: ./auth-service/
-    ports:
-      - "8001:8001"
-    environment:
-      DATABASE_HOST: mysql
-      DATABASE_USER: user_service
-      DATABASE_PASSWORD: Pa$$w0rd@app
-      DATABASE_NAME: user_service
-      SPRING_PROFILES_ACTIVE: default
-    depends_on:
-      - user-service
-      - config-server
-      - discovery-service
-    restart: always
+  # auth-service:
+  #   build: ./auth-service/
+  #   ports:
+  #     - "8001:8001"
+  #   environment:
+  #     DATABASE_HOST: mysql
+  #     DATABASE_USER: user_service
+  #     DATABASE_PASSWORD: Pa$$w0rd@app
+  #     DATABASE_NAME: user_service
+  #     SPRING_PROFILES_ACTIVE: default
+  #   depends_on:
+  #     - user-service
+  #     - config-server
+  #     - discovery-service
+  #   restart: always
 
-  api-gateway:
-    build: ./api-gateway/
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_PROFILES_ACTIVE: default
-    depends_on:
-      - discovery-service
-      - config-server
-      - auth-service
-    restart: always
+  # api-gateway:
+  #   build: ./api-gateway/
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: default
+  #   depends_on:
+  #     - discovery-service
+  #     - config-server
+  #     - auth-service
+  #   restart: always
 
-  frontend:
-    image: gksvp/react-app:latest
-    container_name: react-app-container
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-    environment:
-      - NODE_ENV=production
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+  # frontend:
+  #   image: gksvp/react-app:latest
+  #   container_name: react-app-container
+  #   restart: always
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   environment:
+  #     - NODE_ENV=production
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:80"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
 
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    # Adjust entrypoint to your needs if you want to run certbot in non-renewal mode
+  # certbot:
+  #   image: certbot/certbot
+  #   volumes:
+  #     - ./certbot/conf:/etc/letsencrypt
+  #     - ./certbot/www:/var/www/certbot
+  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  #   # Adjust entrypoint to your needs if you want to run certbot in non-renewal mode
 
 volumes:
   mysql-data:
-  mongo-data:
-  certs:
+  # mongo-data:
+  # certs:

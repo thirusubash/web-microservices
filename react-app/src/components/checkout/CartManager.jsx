@@ -1,200 +1,344 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Box,
-  Typography,
-  IconButton,
-  Button,
-  TextField,
   Card,
   CardContent,
   CardActions,
-  Snackbar,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Slide,
-} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
-import CloseIcon from '@mui/icons-material/Close';
-import { fetchCartItems, addToCart, updateCartItem, deleteCartItem } from '../../redux/slices/cartSlice';
+  IconButton,
+  Typography,
+  Skeleton,
+  TextField,
+  Grid,
+  CardMedia,
+  Chip,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import DiscountIcon from "@mui/icons-material/Discount";
 
-const SlideTransition = (props) => <Slide {...props} direction="up" />;
+const cmToFeet = (cm) => (cm * 0.0328084).toFixed(2); // Convert cm to feet
 
-function CartManager() {
-  const dispatch = useDispatch();
-  const { cartItems, loading, error } = useSelector((state) => state.cart);
-  const [editIndex, setEditIndex] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [itemName, setItemName] = useState("");
-  const [itemQuantity, setItemQuantity] = useState("");
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+const CartManager = () => {
+  const [loading, setLoading] = useState(true);
+  const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-    dispatch(fetchCartItems());
-  }, [dispatch]);
+    // Simulate fetching cart items
+    setTimeout(() => {
+      setCartItems([
+        {
+          id: 1,
+          name: "Gold Brown Floor Tile",
+          quantity: 2,
+          price: 800, // Price in INR per sq.ft
+          description:
+            "A beautiful gold-brown floor tile perfect for any room.",
+          imageUrl: "https://via.placeholder.com/150",
+          category: "Flooring",
+          discount: 10,
+          width: 30, // in cm
+          height: 30, // in cm
+          length: 30, // in cm
+          weight: "1.5kg",
+          color: "Gold Brown",
+        },
+        {
+          id: 2,
+          name: "Green Ocean Kitchen Top",
+          quantity: 1,
+          price: 1500, // Price in INR per sq.ft
+          description:
+            "A stunning green ocean-colored kitchen top for modern kitchens.",
+          imageUrl: "https://via.placeholder.com/150",
+          category: "Kitchen",
+          discount: 15,
+          width: 150, // in cm
+          height: 2, // in cm
+          length: 150, // in cm
+          weight: "25kg",
+          color: "Green Ocean",
+        },
+        {
+          id: 3,
+          name: "Deep Ocean Kitchen Top",
+          quantity: 3,
+          price: 500, // Price in INR per sq.ft
+          description: "A deep ocean blue kitchen top to complement any decor.",
+          imageUrl: "https://via.placeholder.com/150",
+          category: "Kitchen",
+          discount: 5,
+          width: 150, // in cm
+          height: 2, // in cm
+          length: 150, // in cm
+          weight: "23kg",
+          color: "Deep Ocean",
+        },
+        {
+          id: 4,
+          name: "Sky Red Tile",
+          quantity: 3,
+          price: 500, // Price in INR per sq.ft
+          description: "A vibrant red tile for bold design choices.",
+          imageUrl: "https://via.placeholder.com/150",
+          category: "Tiles",
+          discount: 20,
+          width: 30, // in cm
+          height: 30, // in cm
+          length: 30, // in cm
+          weight: "1.3kg",
+          color: "Sky Red",
+        },
+      ]);
+      setLoading(false);
+    }, 2000); // Simulate a 2-second loading time
+  }, []);
 
-  const handleAddItem = async () => {
-    if (!itemName || itemQuantity <= 0) {
-      setSnackbarMessage("Invalid item data.");
-      setSnackbarOpen(true);
-      return;
-    }
+  const handleIncreaseItem = useCallback(
+    (index) => {
+      const updatedItem = {
+        ...cartItems[index],
+        quantity: cartItems[index].quantity + 1,
+      };
+      const updatedCartItems = [...cartItems];
+      updatedCartItems[index] = updatedItem;
+      setCartItems(updatedCartItems);
+    },
+    [cartItems]
+  );
 
-    try {
-      await dispatch(addToCart({ name: itemName, quantity: itemQuantity }));
-      setItemName("");
-      setItemQuantity("");
-      setSnackbarMessage("Item added successfully!");
-      setSnackbarOpen(true);
-    } catch (error) {
-      setSnackbarMessage("Failed to add item.");
-      setSnackbarOpen(true);
-    }
+  const handleDecreaseItem = useCallback(
+    (index) => {
+      const updatedItem = {
+        ...cartItems[index],
+        quantity: Math.max(cartItems[index].quantity - 1, 1),
+      };
+      const updatedCartItems = [...cartItems];
+      updatedCartItems[index] = updatedItem;
+      setCartItems(updatedCartItems);
+    },
+    [cartItems]
+  );
+
+  const handleItemQuantityChange = useCallback(
+    (index, value) => {
+      const updatedItem = {
+        ...cartItems[index],
+        quantity: value,
+      };
+      const updatedCartItems = [...cartItems];
+      updatedCartItems[index] = updatedItem;
+      setCartItems(updatedCartItems);
+    },
+    [cartItems]
+  );
+
+  const handleDimensionChange = useCallback(
+    (index, field, value) => {
+      const updatedItem = {
+        ...cartItems[index],
+        [field]: value,
+      };
+      const updatedCartItems = [...cartItems];
+      updatedCartItems[index] = updatedItem;
+      setCartItems(updatedCartItems);
+    },
+    [cartItems]
+  );
+
+  const handleDeleteItem = useCallback(
+    (index) => {
+      const updatedCartItems = cartItems.filter((_, i) => i !== index);
+      setCartItems(updatedCartItems);
+    },
+    [cartItems]
+  );
+
+  const calculateFinalPrice = (item) => {
+    const area =
+      cmToFeet(item.width) * cmToFeet(item.height) * cmToFeet(item.length); // Area in square feet
+    const totalPrice = item.price * area * item.quantity;
+    const discountedPrice = totalPrice - (totalPrice * item.discount) / 100;
+    return discountedPrice.toFixed(2);
   };
 
-  const handleEditItem = (index) => {
-    setEditIndex(index);
-    setItemName(cartItems[index].name);
-    setItemQuantity(cartItems[index].quantity);
-    setOpenDialog(true);
-  };
-
-  const handleUpdateItem = async () => {
-    if (!itemName || itemQuantity <= 0) {
-      setSnackbarMessage("Invalid item data.");
-      setSnackbarOpen(true);
-      return;
-    }
-
-    try {
-      await dispatch(updateCartItem({ id: cartItems[editIndex].id, name: itemName, quantity: itemQuantity }));
-      setEditIndex(null);
-      setItemName("");
-      setItemQuantity("");
-      setOpenDialog(false);
-      setSnackbarMessage("Item updated successfully!");
-      setSnackbarOpen(true);
-    } catch (error) {
-      setSnackbarMessage("Failed to update item.");
-      setSnackbarOpen(true);
-    }
-  };
-
-  const handleDeleteItem = async (index) => {
-    try {
-      await dispatch(deleteCartItem(cartItems[index].id));
-      setSnackbarMessage("Item deleted successfully!");
-      setSnackbarOpen(true);
-    } catch (error) {
-      setSnackbarMessage("Failed to delete item.");
-      setSnackbarOpen(true);
-    }
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
-
-  return (
-    <Box p={3}>
-      <Typography variant="h4" gutterBottom>
-        Manage Cart
-      </Typography>
-
-      <Button
-        variant="contained"
-        color="primary"
-        startIcon={<AddIcon />}
-        onClick={() => setOpenDialog(true)}
-        sx={{ mb: 2 }}
-      >
-        Add Item
-      </Button>
-
-      <Box>
-        {cartItems.map((item, index) => (
-          <Card key={item.id} sx={{ mb: 2 }}>
+  const renderCartItems = useMemo(() => {
+    if (loading) {
+      return Array.from(new Array(3)).map((_, index) => (
+        <Grid item xs={12} sm={6} md={4} key={index} mt={4}>
+          <Card sx={{ mb: 2 }}>
             <CardContent>
-              <Typography variant="h6">{item.name}</Typography>
-              <Typography variant="body2">Quantity: {item.quantity}</Typography>
-              <Typography variant="body2">Price: ${item.price.toFixed(2)}</Typography>
+              <Skeleton variant="rectangular" width="100%" height={150} />
+              <Skeleton variant="text" width="60%" height={24} />
+              <Skeleton variant="text" width="40%" height={20} />
+              <Skeleton variant="text" width="30%" height={20} />
             </CardContent>
             <CardActions>
-              <IconButton onClick={() => handleEditItem(index)}>
-                <EditIcon />
-              </IconButton>
-              <IconButton onClick={() => handleDeleteItem(index)}>
-                <DeleteIcon />
-              </IconButton>
+              <Skeleton variant="rectangular" width={40} height={40} />
+              <Skeleton variant="rectangular" width={40} height={40} />
+              <Skeleton variant="rectangular" width={40} height={40} />
+              <Skeleton variant="rectangular" width={40} height={40} />
             </CardActions>
           </Card>
-        ))}
-      </Box>
+        </Grid>
+      ));
+    }
 
-      {/* Add/Edit Dialog */}
-      <Dialog
-        open={openDialog}
-        TransitionComponent={SlideTransition}
-        onClose={() => setOpenDialog(false)}
-      >
-        <DialogTitle>
-          {editIndex !== null ? "Edit Item" : "Add Item"}
-        </DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Item Name"
-            fullWidth
-            variant="standard"
-            value={itemName}
-            onChange={(e) => setItemName(e.target.value)}
-          />
-          <TextField
-            margin="dense"
-            label="Quantity"
-            fullWidth
-            variant="standard"
-            type="number"
-            value={itemQuantity}
-            onChange={(e) => setItemQuantity(Number(e.target.value))}
-            InputProps={{ inputProps: { min: 1 } }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-          <Button
-            onClick={editIndex !== null ? handleUpdateItem : handleAddItem}
-          >
-            {editIndex !== null ? "Update" : "Add"}
-          </Button>
-        </DialogActions>
-      </Dialog>
+    if (!Array.isArray(cartItems) || cartItems.length === 0) {
+      return (
+        <Typography variant="body1" sx={{ textAlign: "center", mt: 2 }}>
+          No items in the cart.
+        </Typography>
+      );
+    }
 
-      {/* Snackbar */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-        message={snackbarMessage}
-        action={
-          <IconButton
-            size="small"
-            aria-label="close"
-            color="inherit"
-            onClick={handleSnackbarClose}
-          >
-            <CloseIcon fontSize="small" />
-          </IconButton>
-        }
-      />
+    return cartItems.map((item, index) => (
+      <Grid item xs={12} sm={6} md={4} key={item.id} mt={4}>
+        <Card sx={{ mb: 2, position: "relative" }}>
+          <CardMedia
+            component="img"
+            height="150"
+            image={item.imageUrl}
+            alt={item.name}
+          />
+          {item.discount > 0 && (
+            <Chip
+              label={`${item.discount}% OFF`}
+              color="secondary"
+              icon={<DiscountIcon />}
+              sx={{
+                position: "absolute",
+                top: 10,
+                left: 10,
+                fontWeight: "bold",
+                backgroundColor: "#FF7043",
+                color: "white",
+              }}
+            />
+          )}
+          <CardContent>
+            <Typography variant="h6">{item.name}</Typography>
+            <Typography variant="body2" color="text.secondary">
+              {item.description}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Category: {item.category}
+            </Typography>
+            <Typography variant="body2">
+              Price per sq.ft: ₹{item.price.toFixed(2)}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Dimensions: {cmToFeet(item.width)}ft x {cmToFeet(item.height)}ft x{" "}
+              {cmToFeet(item.length)}ft
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Weight: {item.weight}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Color: {item.color}
+            </Typography>
+            <Typography variant="subtitle1" color="primary" sx={{ mt: 2 }}>
+              Your Price: ₹{calculateFinalPrice(item)}
+            </Typography>
+          </CardContent>
+          <CardActions>
+            <IconButton
+              aria-label="decrease item quantity"
+              onClick={() => handleDecreaseItem(index)}
+            >
+              <RemoveIcon color="info" />
+            </IconButton>
+            <TextField
+              variant="outlined"
+              type="number"
+              value={item.quantity}
+              onChange={(e) =>
+                handleItemQuantityChange(
+                  index,
+                  Math.max(Number(e.target.value), 1)
+                )
+              }
+              inputProps={{ min: 1 }}
+              sx={{ width: 60, textAlign: "center" }}
+            />
+            <IconButton
+              aria-label="increase item quantity"
+              onClick={() => handleIncreaseItem(index)}
+            >
+              <AddIcon color="primary" />
+            </IconButton>
+            <TextField
+              variant="outlined"
+              type="number"
+              label="Width (cm)"
+              value={item.width}
+              onChange={(e) =>
+                handleDimensionChange(
+                  index,
+                  "width",
+                  Math.max(Number(e.target.value), 1)
+                )
+              }
+              inputProps={{ min: 1 }}
+              sx={{ width: 80, textAlign: "center", ml: 2 }}
+            />
+            <TextField
+              variant="outlined"
+              type="number"
+              label="Height (cm)"
+              value={item.height}
+              onChange={(e) =>
+                handleDimensionChange(
+                  index,
+                  "height",
+                  Math.max(Number(e.target.value), 1)
+                )
+              }
+              inputProps={{ min: 1 }}
+              sx={{ width: 80, textAlign: "center", ml: 2 }}
+            />
+            <TextField
+              variant="outlined"
+              type="number"
+              label="Length (cm)"
+              value={item.length}
+              onChange={(e) =>
+                handleDimensionChange(
+                  index,
+                  "length",
+                  Math.max(Number(e.target.value), 1)
+                )
+              }
+              inputProps={{ min: 1 }}
+              sx={{ width: 80, textAlign: "center", ml: 2 }}
+            />
+            <IconButton
+              aria-label="delete item"
+              onClick={() => handleDeleteItem(index)}
+            >
+              <DeleteIcon color="error" />
+            </IconButton>
+          </CardActions>
+        </Card>
+      </Grid>
+    ));
+  }, [
+    loading,
+    cartItems,
+    handleIncreaseItem,
+    handleDecreaseItem,
+    handleItemQuantityChange,
+    handleDimensionChange,
+    handleDeleteItem,
+  ]);
+
+  return (
+    <Box>
+      <Grid container spacing={2}>
+        {renderCartItems}
+      </Grid>
     </Box>
   );
-}
+};
 
 export default CartManager;

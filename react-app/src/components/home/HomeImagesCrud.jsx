@@ -45,7 +45,7 @@ const HomeImagesCrud = ({ selectedHomePage, notification }) => {
   const fetchImages = async () => {
     try {
       const response = await axiosInstance.post(
-        "/media-service/media/findbyAll",
+        "/media/v1/findbyAll",
         uuids
       );
 
@@ -89,9 +89,9 @@ const HomeImagesCrud = ({ selectedHomePage, notification }) => {
 
   const handleDeleteImage = async (imageUuid) => {
     try {
-      await axiosInstance.delete(`/media-service/media/delete/${imageUuid}`);
+      await axiosInstance.delete(`/media/v1/delete/${imageUuid}`);
       await axiosInstance.delete(
-        `/homepage-service/v1/deleteImage/${selectedHomePage.id}/${imageUuid}`
+        `/home/v1/deleteImage/${selectedHomePage.id}/${imageUuid}`
       );
 
       notification({
@@ -117,7 +117,7 @@ const HomeImagesCrud = ({ selectedHomePage, notification }) => {
   const handleToggleImage = async (imageUuid, isActive) => {
     try {
       // Perform the toggle action based on `isActive` or other logic
-      await axiosInstance.patch(`/media-service/media/disable/${imageUuid}`);
+      await axiosInstance.patch(`/media/v1/disable/${imageUuid}`);
 
       // Notification on success
       notification({
@@ -158,7 +158,7 @@ const HomeImagesCrud = ({ selectedHomePage, notification }) => {
     try {
       // Upload the file
       const uploadResponse = await multipartAxiosInstance.post(
-        `/media-service/media/upload/homepage/${selectedHomePage.id}`,
+        `/media/v1/upload/homepage/${selectedHomePage.id}`,
         formData,
         {
           onUploadProgress: (progressEvent) => {
@@ -172,7 +172,7 @@ const HomeImagesCrud = ({ selectedHomePage, notification }) => {
 
       // Perform any necessary update after successful upload
       await axiosInstance.patch(
-        `/homepage-service/v1/updateimage/${selectedHomePage.id}`,
+        `/home/v1/updateimage/${selectedHomePage.id}`,
         uploadResponse.data // Use uploadResponse.data here
       );
 

@@ -1,5 +1,7 @@
 package com.gksvp.apigateway.filters;
 
+import java.util.ArrayList;
+
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpStatus;
@@ -10,8 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import reactor.core.publisher.Mono;
-
-import java.util.ArrayList;
 
 @Component
 public class AuthorizationFilterFactory extends AbstractGatewayFilterFactory<AuthorizationFilterFactory.Config> {

@@ -5,7 +5,7 @@ import { CssBaseline } from '@mui/material';
 
 import PropTypes from 'prop-types';
 import initalTheme from 'themes/theme';
-import axios from 'axios';
+import axiosInstance from 'api/axiosInstance';
 
 
 
@@ -25,7 +25,7 @@ export const ThemeProviderContext = ({ children }) => {
           },[]);
 
     const refreshTheme = (userID) => {
-        axios.get(`http://localhost:8005/user-service/v1/themes/default/${userID}`)
+        axiosInstance.get(`/user/v1/themes/default/${userID}`)
           .then((res) => {
             console.log(res.data.themeJson); // Correctly logging themeJson
             localStorage.setItem('theme', JSON.stringify(res.data.themeJson));

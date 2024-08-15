@@ -1,0 +1,31 @@
+version: "1.0"
+configurations:
+  - name: "MicroserviceA"
+    service: "microservice-a-service"
+    port: 80
+    localPort: 8081
+    environment:
+      - name: "KUBECONFIG"
+        value: "/path/to/your/kubeconfig"
+    debug:
+      port: 3001
+
+  - name: "MicroserviceB"
+    service: "microservice-b-service"
+    port: 80
+    localPort: 8082
+    environment:
+      - name: "KUBECONFIG"
+        value: "/path/to/your/kubeconfig"
+    debug:
+      port: 3002
+
+  - name: "MicroserviceC"
+    service: "microservice-c-service"
+    port: 80
+    localPort: 8083
+    environment:
+      - name: "KUBECONFIG"
+        value: "/path/to/your/kubeconfig"
+    debug:
+      port: 3003

@@ -22,7 +22,7 @@ function HomePageForm({ initialData, onSuccess, notification }) {
 
   const [formData, setFormData] = useState(initialData || defaultData);
   const [isLoading, setIsLoading] = useState(false);
-  const { post } = usePost("/homepage-service/v1");
+  const { post } = usePost("/home/v1");
 
   const handleChange = (e) => {
     const { name, value } = e.target;

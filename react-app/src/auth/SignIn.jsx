@@ -16,6 +16,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/slices/authSlice";
 import GlowingCircularProgress from "utils/GlowingCircularProgress";
+import OauthLogin from "./OauthLogin";
 
 const SignIn = () => {
   const [credentials, setCredentials] = useState({
@@ -90,10 +91,7 @@ const SignIn = () => {
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.gksvp.com/login" />
-        <meta
-          property="og:image"
-          content="%PUBLIC_URL%/favicon.ico" 
-        />
+        <meta property="og:image" content="%PUBLIC_URL%/favicon.ico" />
         <link rel="canonical" href="https://www.gksvp.com/login" />
       </Helmet>
       <Container component="main" maxWidth="xs">
@@ -180,6 +178,7 @@ const SignIn = () => {
               >
                 Click here to Register
               </Button>
+              <OauthLogin />
             </>
           )}
         </Box>

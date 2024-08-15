@@ -4,17 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.gksvp.company_service.entity.AbstractEntity;
 import com.gksvp.company_service.entity.company.Company;
-import com.gksvp.company_service.entity.company.Plant;
 import com.gksvp.company_service.listener.AuditingEntityListener;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;

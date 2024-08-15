@@ -9,7 +9,7 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post('/auth-service/v1/authenticate', userData);
+      const response = await axiosInstance.post('/auth/v1/authenticate', userData);
       // Log the response for debugging
       console.log('Login Response:', response);
 
@@ -27,7 +27,7 @@ export const logoutUser = createAsyncThunk(
   'auth/logoutUser',
   async (_, { rejectWithValue }) => {
     try {
-      await axiosInstance.post('/auth-service/v1/logout', {});
+      await axiosInstance.post('/auth/v1/logout', {});
     } catch (error) {
       return rejectWithValue({message : error.message , Code: error.Code});
     }
@@ -39,7 +39,7 @@ export const refreshAccessToken = createAsyncThunk(
   'auth/refreshAccessToken',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post('/auth-service/v1/refresh', {});
+      const response = await axiosInstance.post('/auth/v1/refresh', {});
       return response.data;
     } catch (error) {
       return rejectWithValue({message : error.message , Code: error.Code});

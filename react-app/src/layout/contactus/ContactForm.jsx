@@ -73,7 +73,7 @@ function ContactForm({ onSubmit }) {
     if (!formValues.mobile) {
       newErrors.mobile = "Mobile number is required";
     } else if (!validateMobileNumber(formValues.mobile)) {
-      newErrors.mobile = "Invalid mobile number. Please enter a valid number.";
+      newErrors.mobile = "Please enter a valid number with countrycode(eg. +91).";
     }
     if (!formValues.message) newErrors.message = "Message is required";
 
@@ -112,7 +112,7 @@ function ContactForm({ onSubmit }) {
       <Grid container spacing={2} sx={{ maxWidth: 550 }}>
         <Grid item xs={12}>
           <animated.div style={fieldAnimation}>
-            <TextField
+            <TextField required
               name="name"
               value={formValues.name}
               onChange={handleChange}
@@ -129,7 +129,7 @@ function ContactForm({ onSubmit }) {
         </Grid>
         <Grid item xs={12}>
           <animated.div style={fieldAnimation}>
-            <TextField
+            <TextField required
               name="email"
               value={formValues.email}
               onChange={handleChange}
@@ -148,7 +148,7 @@ function ContactForm({ onSubmit }) {
         <Grid item xs={12}>
           <animated.div style={fieldAnimation}>
           <Tooltip title="Enter the phone number with country code (e.g., +919787048122)" arrow>
-              <TextField
+              <TextField required
                 name="mobile"
                 value={formValues.mobile}
                 onChange={handleChange}
@@ -167,7 +167,7 @@ function ContactForm({ onSubmit }) {
         </Grid>
         <Grid item xs={12}>
           <animated.div style={fieldAnimation}>
-            <TextField
+            <TextField required
               name="message"
               value={formValues.message}
               onChange={handleChange}

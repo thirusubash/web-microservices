@@ -113,6 +113,7 @@ export const themes = [
           main: "#00A76F",
           dark: "#007867",
           darker: "#004B50",
+          contrastText: "#ffffff", // Ensures readable text on primary buttons
         },
         secondary: {
           lighter: "#EFD6FF",
@@ -120,6 +121,7 @@ export const themes = [
           main: "#8E33FF",
           dark: "#5119B7",
           darker: "#27097A",
+          contrastText: "#ffffff", // Ensures readable text on secondary buttons
         },
         info: {
           lighter: "#CAFDF5",
@@ -127,6 +129,7 @@ export const themes = [
           main: "#00B8D9",
           dark: "#006C9C",
           darker: "#003768",
+          contrastText: "#ffffff",
         },
         success: {
           lighter: "#D3FCD2",
@@ -134,6 +137,7 @@ export const themes = [
           main: "#22C55E",
           dark: "#118D57",
           darker: "#065E49",
+          contrastText: "#ffffff",
         },
         warning: {
           lighter: "#FFF5CC",
@@ -141,6 +145,7 @@ export const themes = [
           main: "#FFAB00",
           dark: "#B76E00",
           darker: "#7A4100",
+          contrastText: "#000000", // Ensures readable text on warning buttons
         },
         error: {
           lighter: "#FFEBEB",
@@ -148,6 +153,7 @@ export const themes = [
           main: "#FF5630",
           dark: "#C62828",
           darker: "#8E0000",
+          contrastText: "#ffffff",
         },
         grey: {
           50: "#F9FAFB",
@@ -160,31 +166,157 @@ export const themes = [
           700: "#374151",
           800: "#1F2937",
           900: "#111827",
+          A100: "#D1D1D1", // Additional shades
+          A200: "#A1A1A1",
+          A400: "#707070",
+          A700: "#515151",
         },
         background: {
           paper: "#1E1E1E",
           default: "#121212",
+          appBar: "#212121", // Color for app bars or headers
+          drawer: "#282828", // Color for side navigation drawers
         },
+        text: {
+          primary: "#E0E0E0",
+          secondary: "#B0BEC5",
+          disabled: "#757575",
+          hint: "#9E9E9E",
+        },
+        action: {
+          active: "#ffffff",
+          hover: "rgba(255, 255, 255, 0.08)",
+          selected: "rgba(255, 255, 255, 0.16)",
+          disabled: "rgba(255, 255, 255, 0.3)",
+          disabledBackground: "rgba(255, 255, 255, 0.12)",
+        },
+        divider: "rgba(255, 255, 255, 0.12)", // Divider lines between elements
       },
       typography: {
-        ...defaultFontSettings,
+        fontFamily: "Roboto, sans-serif",
+        fontSize: 14,
+        htmlFontSize: 16,
         h1: {
           fontWeight: 700,
+          fontSize: "3rem",
           color: "#E0E0E0",
+          letterSpacing: "-0.01562em",
+          lineHeight: 1.2,
         },
         h2: {
           fontWeight: 600,
+          fontSize: "2.5rem",
           color: "#B0BEC5",
+          letterSpacing: "-0.00833em",
+          lineHeight: 1.3,
+        },
+        h3: {
+          fontWeight: 500,
+          fontSize: "2rem",
+          color: "#B0BEC5",
+          letterSpacing: "0em",
+          lineHeight: 1.4,
+        },
+        h4: {
+          fontWeight: 500,
+          fontSize: "1.75rem",
+          color: "#B0BEC5",
+          letterSpacing: "0.00735em",
+          lineHeight: 1.5,
+        },
+        h5: {
+          fontWeight: 400,
+          fontSize: "1.5rem",
+          color: "#E0E0E0",
+          letterSpacing: "0em",
+          lineHeight: 1.6,
+        },
+        h6: {
+          fontWeight: 400,
+          fontSize: "1.25rem",
+          color: "#E0E0E0",
+          letterSpacing: "0.0075em",
+          lineHeight: 1.7,
+        },
+        subtitle1: {
+          fontWeight: 400,
+          fontSize: "1rem",
+          color: "#E0E0E0",
+          lineHeight: 1.75,
+        },
+        subtitle2: {
+          fontWeight: 500,
+          fontSize: "0.875rem",
+          color: "#B0BEC5",
+          lineHeight: 1.57,
         },
         body1: {
+          fontWeight: 400,
+          fontSize: "1rem",
           color: "#E0E0E0",
+          lineHeight: 1.5,
         },
         body2: {
+          fontWeight: 400,
+          fontSize: "0.875rem",
           color: "#B0BEC5",
+          lineHeight: 1.43,
+        },
+        button: {
+          fontWeight: 500,
+          fontSize: "0.875rem",
+          textTransform: "uppercase",
+          letterSpacing: "0.02857em",
+        },
+        caption: {
+          fontWeight: 400,
+          fontSize: "0.75rem",
+          color: "#9E9E9E",
+          letterSpacing: "0.03333em",
+          lineHeight: 1.66,
+        },
+        overline: {
+          fontWeight: 400,
+          fontSize: "0.75rem",
+          color: "#9E9E9E",
+          textTransform: "uppercase",
+          letterSpacing: "0.08333em",
+          lineHeight: 2.66,
         },
       },
+      shape: {
+        borderRadius: 8, // Defines global border radius for all components
+      },
+      shadows: [
+        "none",
+        "0px 1px 2px rgba(0, 0, 0, 0.2)",
+        "0px 2px 4px rgba(0, 0, 0, 0.2)",
+        "0px 3px 6px rgba(0, 0, 0, 0.2)",
+        "0px 4px 8px rgba(0, 0, 0, 0.2)",
+        "0px 6px 12px rgba(0, 0, 0, 0.2)",
+        "0px 8px 16px rgba(0, 0, 0, 0.2)",
+        "0px 12px 24px rgba(0, 0, 0, 0.2)",
+        "0px 16px 32px rgba(0, 0, 0, 0.2)",
+        "0px 24px 48px rgba(0, 0, 0, 0.2)",
+        // Additional shadows for elevations above 24
+        "0px 25px 50px rgba(0, 0, 0, 0.2)",
+        "0px 26px 52px rgba(0, 0, 0, 0.2)",
+        "0px 27px 54px rgba(0, 0, 0, 0.2)",
+        "0px 28px 56px rgba(0, 0, 0, 0.2)",
+        "0px 29px 58px rgba(0, 0, 0, 0.2)",
+        "0px 30px 60px rgba(0, 0, 0, 0.2)",
+        "0px 31px 62px rgba(0, 0, 0, 0.2)",
+        "0px 32px 64px rgba(0, 0, 0, 0.2)",
+        "0px 33px 66px rgba(0, 0, 0, 0.2)",
+        "0px 34px 68px rgba(0, 0, 0, 0.2)",
+        "0px 35px 70px rgba(0, 0, 0, 0.2)",
+        "0px 36px 72px rgba(0, 0, 0, 0.2)",
+        "0px 37px 74px rgba(0, 0, 0, 0.2)",
+        "0px 38px 76px rgba(0, 0, 0, 0.2)",
+        "0px 39px 78px rgba(0, 0, 0, 0.2)",
+      ],
     },
-  },
+  },  
   {
     id: 2,
     name: "Tropical Oasis",
