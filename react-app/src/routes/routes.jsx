@@ -1,7 +1,14 @@
+import HomepageComponent from "components/home/HomepageComponent";
+import Notification from "components/home/Notification";
+
 import React, { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 
 // Lazy load all components where possible
+const BrowseCategories = lazy(() => import("components/home/BrowseCategories"));
+const Careers = lazy(() => import("components/home/Careers"));
+const Offers = lazy(() => import("components/home/Offers"));
+const Promotions = lazy(() => import("components/home/Promotions"));
 const RegistrationForm = lazy(() => import("auth/RegistrationForm"));
 const HomePageCrud = lazy(() => import("components/home/HomePageCrud"));
 const Portfolio = lazy(() => import("components/personal/Portfolio"));
@@ -30,8 +37,8 @@ const BasicProducts = lazy(() => import("components/products/BasicProducts"));
 const routes = (
   <Routes>
     {/* Public routes */}
-    <Route path="/" element={<Home />} />
-    <Route path="/home" element={<Home />} />
+    <Route path="/" element={<HomepageComponent />} />
+    <Route path="/home" element={<HomepageComponent />} />
     <Route path="/signin" element={<SignIn />} />
     <Route path="/register" element={<RegistrationForm />} />
     <Route path="/login" element={<SignIn />} />
@@ -40,11 +47,16 @@ const routes = (
     <Route path="/about" element={<About />} />
     <Route path="/cart" element={<CartManager />} />
     <Route path="/products" element={<BasicProducts />} />
-
+    <Route path="/promotions" element={<Promotions />} />
+    <Route path="/offers" element={<Offers />} />
+    <Route path="/careers" element={<Careers />} />
+    <Route path="/categories" element={<BrowseCategories />} />
+    <Route path="/categories" element={<BrowseCategories />} />
     {/* Legal routes, always accessible */}
     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
     <Route path="/terms-of-service" element={<TermsOfService />} />
     <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+    <Route path="/notification" element={<Notification />} />
 
     {/* Private routes */}
     <Route

@@ -1,24 +1,26 @@
 package com.gksvp.authservice.service;
 
-
-import com.gksvp.authservice.exception.UsernameNotFoundException;
-import com.gksvp.authservice.model.User;
-import com.gksvp.authservice.model.UserCreateRequest;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.gksvp.authservice.exception.UsernameNotFoundException;
+import com.gksvp.authservice.model.User;
+import com.gksvp.authservice.model.UserCreateRequest;
+
+import lombok.extern.slf4j.Slf4j;
+
 @Service
 @Slf4j
 public class UserService {
 
-    private static final String USER_SERVICE_BASE_URL = "http://localhost:8005/user-service/";
+    @Value("${user-service.uri:http://user-service}")
+    private String USER_SERVICE_BASE_URL;
 
     private final RestTemplate restTemplate;
 
@@ -40,10 +42,10 @@ public class UserService {
     public User getUserByUsername(String username) {
         return fetchUser("/getuser/byName/" + username);
     }
+
     public User getUserByEmail(String email) {
         return fetchUser("/getuser/byEmail/" + email);
     }
- 
 
     public String createUser(UserCreateRequest newUser) throws Exception {
         String url = USER_SERVICE_BASE_URL + "/getuser";

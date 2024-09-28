@@ -15,8 +15,8 @@ const OauthLogin = () => {
       .post(`${apiGateway}/auth/login`, { username, password }) // Use backticks here
       .then((response) => {
         console.log(response.data);
-        localStorage.setItem('token', response.data.token); // Store token
-        window.location.href = '/home'; // Redirect to home page
+        localStorage.setItem("token", response.data.token); // Store token
+        window.location.href = "/home"; // Redirect to home page
       })
       .catch((error) => {
         console.error(error);
@@ -32,8 +32,8 @@ const OauthLogin = () => {
       })
       .then((response) => {
         console.log(response.data);
-        localStorage.setItem('token', response.data.token); // Store token
-        window.location.href = '/home'; // Redirect to home page
+        localStorage.setItem("token", response.data.token); // Store token
+        window.location.href = "/home"; // Redirect to home page
       })
       .catch((error) => {
         console.error(error);
@@ -66,24 +66,6 @@ const OauthLogin = () => {
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
-      <TextField
-        label="Username"
-        variant="outlined"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        margin="normal"
-      />
-      <TextField
-        label="Password"
-        type="password"
-        variant="outlined"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        margin="normal"
-      />
-      <Button variant="contained" color="primary" onClick={handleLogin}>
-        Login
-      </Button>
       <Box marginTop={2}>
         <div id="googleSignInButton"></div>
       </Box>

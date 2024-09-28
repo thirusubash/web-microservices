@@ -62,7 +62,7 @@ function BasicProducts() {
             id: 1,
             name: "Gold Brown Floor Tile",
             quantity: 2,
-            price: 800, // Price in INR per sq.ft
+            price: 650, // Price in INR per sq.ft
             description: "A beautiful gold-brown floor tile perfect for any room.",
             imageUrl:
               "https://images.pexels.com/photos/3059489/pexels-photo-3059489.jpeg?auto=compress&cs=tinysrgb&w=600",
@@ -88,7 +88,7 @@ function BasicProducts() {
             id: 2,
             name: "Green Ocean Kitchen Top",
             quantity: 1,
-            price: 1500, // Price in INR per sq.ft
+            price: 850, // Price in INR per sq.ft
             description: "A stunning green ocean-colored kitchen top for modern kitchens.",
             imageUrl:
               "https://images.pexels.com/photos/4705833/pexels-photo-4705833.jpeg?auto=compress&cs=tinysrgb&w=600",
@@ -166,7 +166,7 @@ function BasicProducts() {
             id: 5,
             name: "Midnight Black Marble",
             quantity: 4,
-            price: 1200, // Price in INR per sq.ft
+            price: 400, // Price in INR per sq.ft
             description: "A luxurious black marble for premium interiors.",
             imageUrl:
               "https://images.pexels.com/photos/6634140/pexels-photo-6634140.jpeg?auto=compress&cs=tinysrgb&w=600",
@@ -192,7 +192,7 @@ function BasicProducts() {
             id: 6,
             name: "Sunset Yellow Granite",
             quantity: 2,
-            price: 950, // Price in INR per sq.ft
+            price: 600, // Price in INR per sq.ft
             description: "A bright yellow granite for vibrant designs.",
             imageUrl:
               "https://images.pexels.com/photos/4705842/pexels-photo-4705842.jpeg?auto=compress&cs=tinysrgb&w=600",
@@ -268,7 +268,7 @@ function BasicProducts() {
           },
         ]);        
         setLoading(false);
-      }, 1000);
+      }, 100);
     }
   };
 

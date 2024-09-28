@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import {
   Avatar,
@@ -8,8 +8,8 @@ import {
   CssBaseline,
   TextField,
   Typography,
-  Snackbar,
-  Alert,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import LockPersonIcon from "@mui/icons-material/LockPerson";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -17,14 +17,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../redux/slices/authSlice";
 import GlowingCircularProgress from "utils/GlowingCircularProgress";
 import OauthLogin from "./OauthLogin";
+import useSnackbar from "../hooks/useSnackbar"; // Assuming you have implemented the useSnackbar hook
 
 const SignIn = () => {
   const [credentials, setCredentials] = useState({
     username: "",
     password: "",
   });
-  const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,9 +32,10 @@ const SignIn = () => {
   const loading = useSelector((state) => state.auth.loading);
   const error = useSelector((state) => state.auth.error);
 
+  const { SnackbarComponent, showSnackbar } = useSnackbar();
+
   useEffect(() => {
     if (isAuthenticated) {
-      // Redirect to the intended route or home if already authenticated
       const from = location.state?.from?.pathname || "/";
       navigate(from, { replace: true });
     }
@@ -42,38 +43,43 @@ const SignIn = () => {
 
   useEffect(() => {
     if (error) {
-      setErrorMessage(error);
-      setShowError(true);
+      const errorMessage =
+        typeof error === "string"
+          ? error
+          : error.message || "An unexpected error occurred";
+      showSnackbar(errorMessage, "error");
     }
-  }, [error]);
+  }, [error, showSnackbar]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setShowError(false);
 
     try {
-      await dispatch(loginUser(credentials)).unwrap();
+      await dispatch(loginUser({ ...credentials, rememberMe })).unwrap();
       const from = location.state?.from?.pathname || "/";
       navigate(from, { replace: true });
     } catch (error) {
-      setErrorMessage(error.message);
-      setShowError(true);
+      const errorMessage =
+        typeof error === "string"
+          ? error
+          : error.message || "An unexpected error occurred";
+      showSnackbar(errorMessage, "error");
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setCredentials((prevCredentials) => ({
       ...prevCredentials,
       [name]: value,
     }));
-  };
+  }, []);
+
+  const handleRememberMeChange = useCallback((e) => {
+    setRememberMe(e.target.checked);
+  }, []);
 
   const isSubmitDisabled = credentials.password.length < 8;
-
-  const handleSnackbarClose = () => {
-    setShowError(false);
-  };
 
   return (
     <Box>
@@ -104,16 +110,6 @@ const SignIn = () => {
             alignItems: "center",
           }}
         >
-          <Snackbar
-            open={showError}
-            autoHideDuration={6000}
-            onClose={handleSnackbarClose}
-            aria-live="assertive"
-          >
-            <Alert severity="error" onClose={handleSnackbarClose}>
-              {errorMessage}
-            </Alert>
-          </Snackbar>
           {loading ? (
             <GlowingCircularProgress />
           ) : (
@@ -157,6 +153,18 @@ const SignIn = () => {
                   value={credentials.password}
                   onChange={handleChange}
                   aria-label="Password"
+                  autoComplete="current-password"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={rememberMe}
+                      onChange={handleRememberMeChange}
+                      color="primary"
+                    />
+                  }
+                  label="Remember me"
+                  aria-label="Remember me"
                 />
                 <Button
                   fullWidth
@@ -182,6 +190,7 @@ const SignIn = () => {
             </>
           )}
         </Box>
+        {SnackbarComponent}
       </Container>
     </Box>
   );

@@ -1,11 +1,5 @@
 import React, { useCallback } from "react";
-import {
-  Box,
-  Typography,
-  IconButton,
-  Link,
-  useTheme,
-} from "@mui/material";
+import { Box, Typography, IconButton, Link, useTheme } from "@mui/material";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import FacebookIcon from "@mui/icons-material/Facebook";
@@ -63,7 +57,6 @@ const Footer = () => {
       bgcolor="initial"
       sx={{ padding: "1rem" }}
       mb={0}
-      zIndex={1500}
     >
       {/* Floating Icons */}
       <IconButton
@@ -72,7 +65,7 @@ const Footer = () => {
         color="primary"
         sx={{
           animation: `${wave} 5s ease-in-out infinite, ${colorChange} 6s ease-in-out infinite`,
-          transition: 'transform 0.3s ease, color 0.3s ease',
+          transition: "transform 0.3s ease, color 0.3s ease",
         }}
       >
         <PhoneIcon />
@@ -88,7 +81,7 @@ const Footer = () => {
         sx={{
           animation: `${wave} 5s ease-in-out infinite, ${colorChange} 6s ease-in-out infinite`,
           animationDelay: "0.5s",
-          transition: 'transform 0.3s ease, color 0.3s ease',
+          transition: "transform 0.3s ease, color 0.3s ease",
         }}
       >
         <WhatsAppIcon />
@@ -100,7 +93,7 @@ const Footer = () => {
         sx={{
           animation: `${wave} 5s ease-in-out infinite, ${colorChange} 6s ease-in-out infinite`,
           animationDelay: "1s",
-          transition: 'transform 0.3s ease, color 0.3s ease',
+          transition: "transform 0.3s ease, color 0.3s ease",
         }}
       >
         <EmailIcon />
@@ -112,7 +105,7 @@ const Footer = () => {
         sx={{
           animation: `${wave} 5s ease-in-out infinite, ${colorChange} 6s ease-in-out infinite`,
           animationDelay: "1.5s",
-          transition: 'transform 0.3s ease, color 0.3s ease',
+          transition: "transform 0.3s ease, color 0.3s ease",
         }}
       >
         <LocationOnIcon />
@@ -123,7 +116,7 @@ const Footer = () => {
         sx={{
           animation: `${wave} 5s ease-in-out infinite, ${colorChange} 6s ease-in-out infinite`,
           animationDelay: "2s",
-          transition: 'transform 0.3s ease, color 0.3s ease',
+          transition: "transform 0.3s ease, color 0.3s ease",
         }}
       >
         <PaymentIcon />
@@ -143,7 +136,7 @@ const Footer = () => {
           sx={{
             animation: `${wave} 5s ease-in-out infinite, ${colorChange} 6s ease-in-out infinite`,
             animationDelay: "2.5s",
-            transition: 'transform 0.3s ease, color 0.3s ease',
+            transition: "transform 0.3s ease, color 0.3s ease",
           }}
         >
           <FacebookIcon />
@@ -162,7 +155,7 @@ const Footer = () => {
           sx={{
             animation: `${wave} 5s ease-in-out infinite, ${colorChange} 6s ease-in-out infinite`,
             animationDelay: "3s",
-            transition: 'transform 0.3s ease, color 0.3s ease',
+            transition: "transform 0.3s ease, color 0.3s ease",
           }}
         >
           <LinkedInIcon />
@@ -170,7 +163,12 @@ const Footer = () => {
       </Link>
 
       {/* Copyright Notice */}
-      <Typography variant="body2" color="textSecondary" align="center" sx={{ marginTop: 1 }}>
+      <Typography
+        variant="body2"
+        color="textSecondary"
+        align="center"
+        sx={{ marginTop: 1 }}
+      >
         © 2024 gksvp.com. All rights reserved.
       </Typography>
     </Box>

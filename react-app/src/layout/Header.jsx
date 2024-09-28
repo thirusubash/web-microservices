@@ -42,7 +42,7 @@ const buttonData = [
   { label: "Contact Us", path: "/contactus" },
 ];
 
-function Header() {
+const Header = React.memo(() => {
   const user = useSelector((state) => state.auth.user);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
@@ -154,9 +154,9 @@ function Header() {
                 justifyContent: "center",
                 alignItems: "center",
                 width: {
-                  xs: "40px", // mobile
-                  sm: "50px", // small tablets
-                  md: "80px", // desktop
+                  xs: "40px",
+                  sm: "50px",
+                  md: "80px",
                 },
                 height: {
                   xs: "40px",
@@ -165,8 +165,8 @@ function Header() {
                 },
                 p: 0,
                 "& img": {
-                  width: "100%", // Ensure image fills the button
-                  height: "auto", // Maintain aspect ratio
+                  width: "100%",
+                  height: "auto",
                 },
               }}
             >
@@ -199,12 +199,12 @@ function Header() {
                   fontSize: "0.850rem",
                   padding: "0.5rem 1rem",
                   mx: 0.5,
-                  transition: "all 0.3s ease", // Smooth transition for hover effects
+                  transition: "all 0.3s ease",
                   "&:hover": {
-                    backgroundColor: "primary.light", // Change background color on hover
-                    color: "background.paper", // Change text color on hover
-                    transform: "scale(1.05)", // Slightly enlarge the button on hover
-                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Add shadow for depth
+                    backgroundColor: "primary.light",
+                    color: "background.paper",
+                    transform: "scale(1.05)",
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
                   },
                   "@media (max-width: 600px)": {
                     fontSize: "1rem",
@@ -233,12 +233,12 @@ function Header() {
                   fontSize: "0.850rem",
                   padding: "0.5rem 1rem",
                   mx: 0.5,
-                  transition: "all 0.3s ease", // Smooth transition for hover effects
+                  transition: "all 0.3s ease",
                   "&:hover": {
-                    backgroundColor: "primary.light", // Change background color on hover
-                    color: "background.paper", // Change text color on hover
-                    transform: "scale(1.05)", // Slightly enlarge the button on hover
-                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", // Add shadow for depth
+                    backgroundColor: "primary.light",
+                    color: "background.paper",
+                    transform: "scale(1.05)",
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
                   },
                   "@media (max-width: 600px)": {
                     fontSize: "1rem",
@@ -268,7 +268,13 @@ function Header() {
               </IconButton>
             </Tooltip>
             <Tooltip title="View Notifications" arrow>
-              <IconButton size="large" aria-label="View Notifications">
+              <IconButton
+                size="large"
+                aria-label="View Notifications"
+                onClick={() => {
+                  navigate("/notification");
+                }}
+              >
                 <Badge badgeContent={1} color="error">
                   <NotificationsIcon color="primary" />
                 </Badge>
@@ -352,6 +358,6 @@ function Header() {
       </Menu>
     </>
   );
-}
+});
 
 export default Header;
